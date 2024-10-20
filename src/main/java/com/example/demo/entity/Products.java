@@ -23,8 +23,9 @@ public class Products {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     //データベーステーブルの列と対応して列名を指定
-    @Column(name = "category_id")
-    private Long categoryId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "category_id", referencedColumnName = "id", nullable = false)
+    private Categories category;
     @Column(name = "name")
     private String name;
     @Column(name = "description")
@@ -50,5 +51,9 @@ public class Products {
 
     public String getUserName() {
         return user != null ? user.getUserName() : null;
+    }
+    
+    public String getCategoryName() {
+        return category != null ? category.getName() : null;
     }
 }

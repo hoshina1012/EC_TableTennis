@@ -53,11 +53,12 @@
 		    <form action="#" th:action="@{/product/save}" th:object="${product}" method="post">		
 				<div class="text_zone">
 				    <label class="text_title" for="category">カテゴリー:</label>
-				    <select class="text_area" id="category" th:field="*{categoryId}" required>
-				        <option value="1">ラケット</option>
-				        <option value="2">ラバー</option>
-				        <option value="3">シューズ</option>
-				    </select>
+					<select class="text_area" id="category" th:field="*{category}" required>
+					    <option th:each="category : ${categories}" 
+					            th:value="${category.id}" 
+					            th:text="${category.name}">
+					    </option>
+					</select>
 				</div>
 				<div class="text_zone">
 		            <label class ="text_title" for="name">商品名:</label>

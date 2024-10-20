@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
@@ -11,8 +13,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.example.demo.entity.Categories;
 import com.example.demo.entity.Products;
 import com.example.demo.entity.Users;
+import com.example.demo.service.CategoriesService;
 import com.example.demo.service.ProductsService;
 import com.example.demo.service.UsersService;
 
@@ -23,6 +27,9 @@ public class ProductsController {
     
     @Autowired
     private UsersService usersService;
+    
+    @Autowired
+    private CategoriesService categoriesService;
 	
     @GetMapping("/products")
     public String viewProducts(Model model, 
@@ -59,6 +66,9 @@ public class ProductsController {
         }
 
         model.addAttribute("product", new Products());
+        
+        List<Categories> categories = categoriesService.findAll();
+        model.addAttribute("categories", categories);
         
         if (user != null) {
             model.addAttribute("username", user.getUserName());
