@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">    
+    <link th:href="@{/css/content.css}" rel="stylesheet">
+    <title>支払情報入力</title>
+    <script>
+        // 数字を3桁ごとにカンマで区切る関数
+        function formatPrice(price) {
+            return '￥' + price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        }
+
+        // 商品価格をフォーマットする関数
+        function formatProductPrices() {
+            const priceElements = document.querySelectorAll('.price_format');
+            priceElements.forEach((element) => {
+                const price = element.textContent.replace('￥', '');
+                element.textContent = formatPrice(price);
+            });
+        }
+
+        // DOMがロードされた後に商品価格をフォーマット
+        document.addEventListener('DOMContentLoaded', formatProductPrices);		
+		
+		function validateForm() {
+		    const cardNumber = document.getElementById('cardNumber').value;
+		    const cardKind = document.getElementById('cardKind').value;
+		    const expirationYear = document.getElementById('expirationYear').value;
+		    const expirationMonth = document.getElementById('expirationMonth').value;
+		    const cardHolder = document.getElementById('cardHolder').value;
+		    const securityCode = document.getElementById('securityCode').value;
+		    const lastName = document.getElementById('lastName').value;
+		    const firstName = document.getElementById('firstName').value;
+		    const zipCode1 = document.getElementById('zipCode1').value;
+		    const zipCode2 = document.getElementById('zipCode2').value;
+		    const address = document.getElementById('address').value;
+		
+		    const cardNumberPattern = /^\d{16}$/;
+		    const expirationYearPattern = /^\d{2}$/;
+		    const expirationMonthPattern = /^(0[1-9]|1[0-2])$/;
+		    const cardHolderPattern = /^[A-Z\s]+$/;
+		    const securityCodePattern = /^\d{3}$/;
+		    const postalCodePattern1 = /^\d{3}$/;
+		    const postalCodePattern2 = /^\d{4}$/;
+		
+		    if (!cardNumberPattern.test(cardNumber)) {
+		        alert('カード番号は16桁の数字で入力してください');
+		        return false;
+		    }
+		
+		    if (cardKind < 1 || cardKind > 3) {
+		        alert('カード種類を正しく選択してください');
+		        return false;
+		    }
+		
+		    if (!expirationYearPattern.test(expirationYear) || !expirationMonthPattern.test(expirationMonth)) {
+		        alert('カード有効期限は正しい形式で入力してください（年は2桁、月は01-12の範囲）');
+		        return false;
+		    }
+		
+		    if (!cardHolderPattern.test(cardHolder)) {
+		        alert('カード名義人はアルファベット大文字で入力してください');
+		        return false;
+		    }
+		
+		    if (!securityCodePattern.test(securityCode)) {
+		        alert('セキュリティーコードは3桁の数字で入力してください');
+		        return false;
+		    }
+		
+		    if (lastName.trim() === '') {
+		        alert('姓を入力してください');
+		        return false;
+		    }
+		
+		    if (firstName.trim() === '') {
+		        alert('名を入力してください');
+		        return false;
+		    }
+		
+		    if (!postalCodePattern1.test(zipCode1) || !postalCodePattern2.test(zipCode2)) {
+		        alert('郵便番号は正しい形式で入力してください（3桁-4桁）');
+		        return false;
+		    }
+		
+		    if (address.trim() === '') {
+		        alert('住所を入力してください');
+		        return false;
+		    }
+		
+		    window.location.href = '/ordered';
+		    return true;
+		}
+
+    </script>
+</head>
+<body>
+    <div class="header_container">
+        <div class="header_logout">
+            <a class="header_text" th:href="@{/}">ECサイト</a>
+            <div>
+                <span th:if="${username != null}" class="flex">
+                    <a class="header_text" th:href="@{/users/1}">ようこそ、<span th:text="${username}">ユーザー</span>さん！</a>
+                    <a>　</a>
+                    <a class="header_text" th:href="@{/cart}">カート</a>
+                    <form th:action="@{/logout}" method="post">
+                        <div>
+                            <button class="header_button" type="submit">ログアウト</button>
+                        </div>
+                    </form>
+                </span>
+                <span th:if="${username == null}">
+                    <a class="header_text" th:href="@{/login}">ログイン</a>
+                    <a class="header_text" th:href="@{/signUp}">新規会員登録</a>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+		<h2 class="center_text" th:text="'ユーザー名: ' + ${username}">ユーザー名</h2><br>
+        <h3>カートにある商品一覧:</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th width="10%">商品ID</th>
+                    <th width="55%">商品名</th>                        
+                    <th width="15%">単価</th>
+                    <th width="10%">数量</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="cart : ${cartItems}">
+                    <td class="right_text" th:text="${cart.productId}">Product ID</td>
+                    <td class="center_text" th:text="${cart.productName}">Product Name</td>
+                    <td class="price_format" th:text="'￥' + ${cart.productPrice}">Product Price</td>
+                    <td class="right_text" th:text="${cart.quantity}">Quantity</td>
+                </tr>
+            </tbody>
+        </table>
+        <br>
+        <div class="right_text">合計金額</div>
+        <div>
+            <h2 class="price_format"><span th:text="'￥' + ${totalAmount}">Total Amount</span></h2>
+        </div>				
+		<h1 class="center_text">支払情報入力</h1>
+		<div th:if="${errorMessage != null}" class="error_message">
+            <p th:text="${errorMessage}"></p>
+        </div>
+		<form th:action="@{/order/submit}" method="post" onsubmit="return validateForm()">
+			<div class="text_zone">
+                <label class ="text_title" for="cardNumber">カード番号:</label>
+                <input class ="text_area" type="text" id="cardNumber" name="cardNumber" maxlength="16" required>
+            </div>
+            <div class="text_zone">
+                <label class ="text_title" for="cardKind">カード種類:</label>
+                <select class ="text_area" id="cardKind" name="cardKind" required>
+                    <option value="">選択してください</option>
+                    <option value="1">VISA</option>
+                    <option value="2">MASTER</option>
+                    <option value="3">JCB</option>
+                </select>
+            </div>
+			<div class="text_zone">
+                <label class ="text_title" for="expirationYear">カード有効期限:</label>				
+				<div class="text_zone_half">
+					<input class ="text_area_half" type="text" id="expirationMonth" name="expirationMonth" maxlength="2" placeholder="月" required>
+	                <label for="expirationMonth">/</label>				
+					<input class ="text_area_half" type="text" id="expirationYear" name="expirationYear" maxlength="2" placeholder="年" required>
+				</div>
+            </div>
+			<div class="text_zone">
+                <label class ="text_title" for="cardHolder">カード名義人:</label>
+                <input class ="text_area" type="text" id="cardHolder" name="cardHolder" required>
+            </div>
+			<div class="text_zone">
+                <label class ="text_title" for="securityCode">セキュリティーコード:</label>
+                <input class ="text_area" type="text" id="securityCode" name="securityCode" maxlength="3" required>
+            </div>
+			<div class="text_zone">
+                <label class ="text_title" for="lastName">姓:</label>
+                <input class ="text_area" type="text" id="lastName" name="lastName" required>
+            </div>
+			<div class="text_zone">
+                <label class ="text_title" for="firstName">名:</label>
+                <input class ="text_area" type="text" id="firstName" name="firstName" required>
+            </div>
+			<div class="text_zone">
+                <label class ="text_title" for="zipCode1">郵便番号:</label>
+				<div class="text_zone_half">
+	                <input class ="text_area_half" type="text" id="zipCode1" name="zipCode1" maxlength="3" placeholder="123" required>
+	                <label for="zipCode2">-</label>
+	                <input class ="text_area_half" type="text" id="zipCode2" name="zipCode2" maxlength="4" placeholder="4567" required>
+				</div>
+            </div>
+			<div class="text_zone">
+                <label class ="text_title" for="address">住所:</label>
+                <input class ="text_area" type="text" id="address" name="address" required>
+            </div>
+            <div class="center_text">
+                <button class="center_button" type="submit">購入</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

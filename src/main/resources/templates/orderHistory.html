@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">	
+	<link th:href="@{/css/content.css}" rel="stylesheet">
+<title>ユーザー詳細</title>	
+	<script>
+	    // 数字を3桁ごとにカンマで区切る関数
+	    function formatPrice(price) {
+	        return '￥' + price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+	    }
+	
+	    // 商品価格をフォーマットする関数
+	    function formatProductPrices() {
+	        const priceElements = document.querySelectorAll('.price_format');
+	        priceElements.forEach((element) => {
+	            const price = element.textContent.replace('￥', '');
+	            element.textContent = formatPrice(price);
+	        });
+	    }
+	
+	    // DOMがロードされた後に商品価格をフォーマット
+	    document.addEventListener('DOMContentLoaded', formatProductPrices);
+	</script>
+</head>
+<body>
+	<div class="header_container">
+		<div class="header_logout">
+			<a class="header_text" th:href="@{/}">ECサイト</a>
+			<div>
+				<span th:if="${username != null}" class="flex">
+					<a class="header_text" th:href="@{/users/1}">ようこそ、<span th:text="${username}">ユーザー</span>さん！</a>
+					<a>　</a>
+					<a class="header_text" th:href="@{/cart}">カート</a>
+					<form th:action="@{/logout}" th:object="${user}" method="post">
+					    <div>
+					        <button class="header_button" type="submit">ログアウト</button>
+					    </div>
+					</form>
+	            </span>					
+				<span th:if="${username == null}">
+					<a class="header_text" th:href="@{/login}">ログイン</a>
+					<a class="header_text" th:href="@{/signUp}">新規会員登録</a>
+				</span>
+			</div>
+		</div>
+	</div>
+
+	<div class="container">
+	    <h1 class="center_text">注文履歴</h1>
+		<table class="center_text">
+		    <thead>
+		        <tr>
+		            <th	width="10%">商品ID</th>
+		            <th	width="35%">商品名</th>
+		            <th	width="15%">単価</th>
+		            <th	width="10%">数量</th>
+		            <th	width="15%">注文日</th>					
+					<th width="15%">ステータス</th>
+		        </tr>
+		    </thead>
+		    <tbody>
+				<tr th:each="order : ${orders}">
+                    <td	class="right_text" th:text="${order.product.id}"></td>					
+					<td>
+					    <a th:href="@{/products/product_detail/{productId}(productId = ${order.product.id})}" th:text="${order.product.name}"></a>
+					</td>
+                    <td	class="price_format" th:text="'￥' + ${order.product.price}"></td>
+                    <td	class="quantity" th:text="${order.quantity}"></td>
+                    <td th:text="${#dates.format(order.createdAt, 'yyyy/MM/dd')}"></td>					
+					<td th:text="${order.orderStatus == 0 ? '未発送' : '発送済'}"></td>
+                </tr>
+		    </tbody>
+		</table>
+	</div>
+</body>
+</html>
