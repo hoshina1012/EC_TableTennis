@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<link th:href="@{/css/content.css}" rel="stylesheet">
+<title>Insert title here</title>
+</head>
+<body>
+	<div class="header_container">
+		<div class="header_logout">
+			<a class="header_text" th:href="@{/}">ECサイト</a>
+			<div>
+				<span th:if="${username != null}" class="flex">
+					<a class="header_text" th:href="@{/users/1}">ようこそ、<span th:text="${username}">ユーザー</span>さん！</a>
+					<a>　</a>
+					<a class="header_text" th:href="@{/cart}">カート</a>
+					<form th:action="@{/logout}" th:object="${user}" method="post">
+					    <div>
+					        <button class="header_button" type="submit">ログアウト</button>
+					    </div>
+					</form>
+	            </span>					
+				<span th:if="${username == null}">
+					<a class="header_text" th:href="@{/login}">ログイン</a>
+					<a class="header_text" th:href="@{/signUp}">新規会員登録</a>
+				</span>
+			</div>
+		</div>
+	</div>
+
+	<div class="container">
+		<div class="center_text">	
+			<a th:href="@{/signUp/seller}">販売者としての会員登録はこちらから</a>
+		</div>
+		<h1 class="center_text">新規会員登録</h1>
+		<form action="#" th:action="@{/signUp/save}" th:object="${user}" method="post">		
+			<div class="error_text" th:if="${#fields.hasErrors('mailAddress')}" th:errors="*{mailAddress}">メールアドレスエラー</div>
+		    <div class="text_zone">
+		        <label class ="text_title" for="userName">名前:</label>
+		        <input class ="text_area" type="text" id="userName" th:field="*{userName}" required>
+		    </div>
+			<div class="text_zone">
+		        <label class ="text_title" for="mailAddress">メールアドレス:</label>			
+				<input class ="text_area" type="email" id="mailAddress" th:field="*{mailAddress}" required>			
+		    </div>
+			<div class="text_zone">
+		        <label class ="text_title" for="password">パスワード:</label>
+		        <input class ="text_area" type="text" id="password" th:field="*{password}" required>
+		    </div>
+		    <div>
+		        <button class="center_button" type="submit">新規登録</button>
+		    </div>
+		</form>
+		<div class="center_text">	
+			<a th:href="@{/}">トップページ</a>
+		</div>
+	</div>
+</body>
+</html>
