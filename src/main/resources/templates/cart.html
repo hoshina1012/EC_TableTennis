@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">	
+	<link th:href="@{/css/content.css}" rel="stylesheet">
+    <title>カート</title>	
+	<script>
+	    // 数字を3桁ごとにカンマで区切る関数
+	    function formatPrice(price) {
+	        return '￥' + price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+	    }
+	
+	    // 商品価格をフォーマットする関数
+	    function formatProductPrices() {
+	        const priceElements = document.querySelectorAll('.price_format');
+	        priceElements.forEach((element) => {
+	            const price = element.textContent.replace('￥', '');
+	            element.textContent = formatPrice(price);
+	        });
+	    }
+	
+	    // DOMがロードされた後に商品価格をフォーマット
+	    document.addEventListener('DOMContentLoaded', formatProductPrices);
+	</script>
+</head>
+<body>
+    <div class="header_container">
+        <div class="header_logout">
+            <a class="header_text" th:href="@{/}">ECサイト</a>
+            <div>
+                <span th:if="${username != null}" class="flex">
+					<a class="header_text" th:href="@{/users/1}">ようこそ、<span th:text="${username}">ユーザー</span>さん！</a>
+					<a>　</a>
+					<a class="header_text" th:href="@{/cart}">カート</a>
+                    <form th:action="@{/logout}" method="post">
+                        <div>
+                            <button class="header_button" type="submit">ログアウト</button>
+                        </div>
+                    </form>
+                </span>
+                <span th:if="${username == null}">
+                    <a class="header_text" th:href="@{/login}">ログイン</a>
+                    <a class="header_text" th:href="@{/signUp}">新規会員登録</a>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1	class="center_text">カート</h1>
+		<table>
+            <thead>
+                <tr>
+                    <th width="10%">商品ID</th>
+                    <th	width="35%">商品名</th>						
+					<th	width="15%">単価</th>
+                    <th width="30%" class="left_text">数量</th>						
+					<th	width="10%"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="cart : ${cartItems}">
+                    <td	class="right_text" th:text="${cart.productId}">Product ID</td>
+					<td	class="center_text">
+                        <a th:href="@{/products/product_detail/{productId}(productId=${cart.productId})}" th:text="${cart.productName}">Product Name</a>
+                    </td>
+					<td class="price_format" th:text="'￥' + ${cart.productPrice}">Product Price</td>
+					<td>
+					    <form class="flex" th:action="@{/cart/updateQuantity}" method="post">
+					        <input type="hidden" name="cartId" th:value="${cart.id}"/>
+					        <input class="cart_quantity" type="number" name="quantity" th:value="${cart.quantity}" min="1"/>
+					        <button class="cart_update_button" type="submit">数量更新</button>
+					    </form>
+					</td>						
+					<td>
+					    <form th:action="@{/cart/remove}" method="post">
+					        <input type="hidden" name="cartId" th:value="${cart.id}"/>
+					        <button class="cart_button" type="submit">削除</button>
+					    </form>
+					</td>
+                </tr>
+            </tbody>
+        </table><br>
+		<div class="right_text">合計金額</div>
+		<div>
+		    <h2 class="price_format"><span th:text="'￥' + ${totalAmount}">Total Amount</span></h2>  <!-- 合計金額を表示 -->
+		</div><br>
+        <div class="center_text">
+			<a th:href="@{/order}"><button class="center_button">購入画面へ</button></a>
+            <a th:href="@{/products}">商品一覧</a><br>
+            <a th:href="@{/}">トップページ</a>
+        </div>
+    </div>
+</body>
+</html>
