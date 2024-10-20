@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">	
+	<link th:href="@{/css/content.css}" rel="stylesheet">
+    <title>カート</title>	
+	<script>
+	    // 数字を3桁ごとにカンマで区切る関数
+	    function formatPrice(price) {
+	        return '￥' + price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+	    }
+	
+	    // 商品価格をフォーマットする関数
+	    function formatProductPrices() {
+	        const priceElements = document.querySelectorAll('.price_format');
+	        priceElements.forEach((element) => {
+	            const price = element.textContent.replace('￥', '');
+	            element.textContent = formatPrice(price);
+	        });
+	    }
+	
+	    // DOMがロードされた後に商品価格をフォーマット
+	    document.addEventListener('DOMContentLoaded', formatProductPrices);
+	</script>
+</head>
+<body>
+    <div class="header_admin_container">
+        <div class="header_logout">
+            <a class="header_text" th:href="@{/}">ECサイト</a>
+            <div>
+                <span th:if="${username != null}" class="flex">
+					<a class="header_text" th:href="@{/users/1}">ようこそ、<span th:text="${username}">ユーザー</span>さん！</a>
+					<a>　</a>
+					<a class="header_text" th:href="@{/cart}">カート</a>
+                    <form th:action="@{/logout}" method="post">
+                        <div>
+                            <button class="header_admin_button" type="submit">ログアウト</button>
+                        </div>
+                    </form>
+                </span>
+                <span th:if="${username == null}">
+                    <a class="header_text" th:href="@{/login}">ログイン</a>
+                    <a class="header_text" th:href="@{/signUp}">新規会員登録</a>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+		<div class="center_text">
+            <a th:href="@{/admin}">管理画面に戻る</a>
+        </div>
+        <h1 class="center_text">注文一覧</h1>
+        <table>
+            <tr>
+                <th>ID</th>				
+				<th>金額</th>
+                <th>注文日</th>				
+				<th>注文ユーザー</th>				
+				<th>受注ユーザー</th>				
+				<th></th>
+            </tr>
+			<tr th:each="order : ${ordersPage.content}">
+                <td class="right_text" th:text="${order.id}"></td>				
+				<td	class="price_format" th:text="${amountMap[order.id]}"></td>
+				<td th:text="${#dates.format(order.createdAt, 'yyyy/MM/dd')}"></td>				
+				<td th:text="${userNameMap[order.id]}"></td>				
+				<td th:text="${sellerNameMap[order.id]}"></td>				
+				<td>
+				    <a th:href="@{/admin/order_detail/{id}(id=${order.id})}">詳細</a> <!-- 詳細ページへのリンクを追加 -->
+				</td>
+            </tr>
+        </table><br>
+		<div class="pagination">
+            <a th:href="@{/admin/order(page=${currentPage - 1})}" th:if="${currentPage > 0}">前へ</a>
+
+            <!-- 前の3ページ -->
+            <span th:if="${currentPage > 2}">
+                <a th:href="@{/admin/order(page=${currentPage - 3})}" th:text="${currentPage - 2}"></a>
+            </span>
+            <span th:if="${currentPage > 1}">
+                <a th:href="@{/admin/order(page=${currentPage - 2})}" th:text="${currentPage - 1}"></a>
+            </span>
+            <span th:if="${currentPage > 0}">
+                <a th:href="@{/admin/order(page=${currentPage - 1})}" th:text="${currentPage}"></a>
+            </span>
+
+            <!-- 現在のページ -->
+            <span th:text="${currentPage + 1}" class="active"></span>
+
+            <!-- 次の3ページ -->
+            <span th:if="${currentPage < totalPages - 1}">
+                <a th:href="@{/admin/order(page=${currentPage + 1})}" th:text="${currentPage + 2}"></a>
+            </span>
+            <span th:if="${currentPage < totalPages - 2}">
+                <a th:href="@{/admin/order(page=${currentPage + 2})}" th:text="${currentPage + 3}"></a>
+            </span>
+            <span th:if="${currentPage < totalPages - 3}">
+                <a th:href="@{/admin/order(page=${currentPage + 3})}" th:text="${currentPage + 4}"></a>
+            </span>
+
+            <a th:href="@{/admin/order(page=${currentPage + 1})}" th:if="${currentPage < totalPages - 1}">次へ</a>
+        </div>
+    </div>
+</body>
+</html>

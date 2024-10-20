@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">	
+	<link th:href="@{/css/content.css}" rel="stylesheet">
+    <title>カート</title>	
+	<script>
+	    // 数字を3桁ごとにカンマで区切る関数
+	    function formatPrice(price) {
+	        return '￥' + price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+	    }
+	
+	    // 商品価格をフォーマットする関数
+	    function formatProductPrices() {
+	        const priceElements = document.querySelectorAll('.price_format');
+	        priceElements.forEach((element) => {
+	            const price = element.textContent.replace('￥', '');
+	            element.textContent = formatPrice(price);
+	        });
+	    }
+	
+	    // DOMがロードされた後に商品価格をフォーマット
+	    document.addEventListener('DOMContentLoaded', formatProductPrices);
+	</script>
+</head>
+<body>
+    <div class="header_admin_container">
+        <div class="header_logout">
+            <a class="header_text" th:href="@{/}">ECサイト</a>
+            <div>
+                <span th:if="${username != null}" class="flex">
+					<a class="header_text" th:href="@{/users/1}">ようこそ、<span th:text="${username}">ユーザー</span>さん！</a>
+					<a>　</a>
+					<a class="header_text" th:href="@{/cart}">カート</a>
+                    <form th:action="@{/logout}" method="post">
+                        <div>
+                            <button class="header_admin_button" type="submit">ログアウト</button>
+                        </div>
+                    </form>
+                </span>
+                <span th:if="${username == null}">
+                    <a class="header_text" th:href="@{/login}">ログイン</a>
+                    <a class="header_text" th:href="@{/signUp}">新規会員登録</a>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+		<div class="center_text">
+			<a th:href="@{/admin/user}">ユーザー一覧</a>
+		</div>
+		<div class="center_text">
+			<a th:href="@{/admin/product}">商品一覧</a>
+		</div>
+		<div class="center_text">
+			<a th:href="@{/admin/order}">注文一覧</a>
+		</div>
+		<div class="center_text">
+			<a th:href="@{/admin/help}">問い合わせ一覧</a>
+		</div>
+    </div>
+</body>
+</html>
