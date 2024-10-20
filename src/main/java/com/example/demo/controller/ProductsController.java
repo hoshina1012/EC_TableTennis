@@ -14,10 +14,22 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.entity.Categories;
+import com.example.demo.entity.Colors;
 import com.example.demo.entity.Products;
+import com.example.demo.entity.RacketTypes;
+import com.example.demo.entity.RubberColors;
+import com.example.demo.entity.ShoesSizes;
+import com.example.demo.entity.Sizes;
+import com.example.demo.entity.Types;
 import com.example.demo.entity.Users;
+import com.example.demo.repository.RacketTypesRepository;
+import com.example.demo.repository.RubberColorsRepository;
+import com.example.demo.repository.ShoesSizesRepository;
 import com.example.demo.service.CategoriesService;
+import com.example.demo.service.ColorsService;
 import com.example.demo.service.ProductsService;
+import com.example.demo.service.SizesService;
+import com.example.demo.service.TypesService;
 import com.example.demo.service.UsersService;
 
 @Controller
@@ -30,6 +42,24 @@ public class ProductsController {
     
     @Autowired
     private CategoriesService categoriesService;
+    
+    @Autowired
+    private TypesService typesService;
+    
+    @Autowired
+    private ColorsService colorsService;
+    
+    @Autowired
+    private SizesService sizesService;
+    
+    @Autowired
+    private RacketTypesRepository racketTypesRepository;
+    
+    @Autowired
+    private RubberColorsRepository rubberColorsRepository;
+    
+    @Autowired
+    private ShoesSizesRepository shoesSizesRepository;
 	
     @GetMapping("/products")
     public String viewProducts(Model model, 
@@ -70,6 +100,14 @@ public class ProductsController {
         List<Categories> categories = categoriesService.findAll();
         model.addAttribute("categories", categories);
         
+        List<Types> types = typesService.findAll();
+        List<Colors> colors = colorsService.findAll();
+        List<Sizes> sizes = sizesService.findAll();
+        
+        model.addAttribute("types", types);
+        model.addAttribute("colors", colors);
+        model.addAttribute("sizes", sizes);
+        
         if (user != null) {
             model.addAttribute("username", user.getUserName());
             model.addAttribute("loggedInUserId", user.getId());
@@ -79,13 +117,55 @@ public class ProductsController {
     }
 
     @PostMapping("/product/save")
-    public String saveProduct(@ModelAttribute("product") Products product) {
-    	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    public String saveProduct(
+        @ModelAttribute("product") Products product,
+        @RequestParam(value = "selectedTypes", required = false) List<Long> selectedTypes, // ラケットのタイプが選択された場合
+        @RequestParam(value = "selectedColors", required = false) List<Long> selectedColors, // ラバーの色が選択された場合
+        @RequestParam(value = "selectedSizes", required = false) List<Long> selectedSizes // シューズのサイズが選択された場合
+    ) {
+        // 現在の認証されたユーザーを取得
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName(); // 認証されたユーザー名を取得
         Users loggedInUser = usersService.findByMailAddress(username);
+        
+        // 商品にユーザー情報を設定
         product.setUser(loggedInUser);
-    	
-        productsService.saveProduct(product);
+        
+        // 商品情報を保存
+        Products savedProduct = productsService.saveProduct(product);
+
+        // ラケットの場合、racket_typesテーブルにデータを保存
+        if (selectedTypes != null && product.getCategory().getId() == 1) {
+            for (Long typeId : selectedTypes) {
+                RacketTypes racketType = new RacketTypes();
+                racketType.setProductId(savedProduct.getId()); // 保存された商品のID
+                racketType.setTypeId(typeId); // 選択されたタイプのID
+                racketTypesRepository.save(racketType); // データベースに保存
+            }
+        }
+
+        // ラバーの場合、rubber_colorsテーブルにデータを保存
+        if (selectedColors != null && product.getCategory().getId() == 2) {
+            for (Long colorId : selectedColors) {
+                RubberColors rubberColor = new RubberColors();
+                rubberColor.setProductId(savedProduct.getId()); // 保存された商品のID
+                rubberColor.setColorId(colorId); // 選択された色のID
+                rubberColorsRepository.save(rubberColor); // データベースに保存
+            }
+        }
+
+        // シューズの場合、shoes_sizesテーブルにデータを保存
+        if (selectedSizes != null && product.getCategory().getId() == 3) {
+            for (Long sizeId : selectedSizes) {
+                ShoesSizes shoesSize = new ShoesSizes();
+                shoesSize.setProductId(savedProduct.getId()); // 保存された商品のID
+                shoesSize.setSizeId(sizeId); // 選択されたサイズのID
+                shoesSizesRepository.save(shoesSize); // データベースに保存
+            }
+        }
+
+        // 商品リストページにリダイレクト
         return "redirect:/products";
     }
+
 }

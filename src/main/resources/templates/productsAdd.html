@@ -22,6 +22,38 @@
 	
 	    // DOMがロードされた後に商品価格をフォーマット
 	    document.addEventListener('DOMContentLoaded', formatProductPrices);
+		
+		
+		function updateOptions() {
+		        const category = document.getElementById("category").value;
+		        const typeOptions = document.getElementById("typeOptions");
+		        const colorOptions = document.getElementById("colorOptions");
+		        const sizeOptions = document.getElementById("sizeOptions");
+		
+		        // 全てのオプションを隠す
+		        typeOptions.style.display = "none";
+		        colorOptions.style.display = "none";
+		        sizeOptions.style.display = "none";
+		
+		        // 選択されたカテゴリーに応じて表示するオプションを決定
+		        if (category === "1") { // ラケット
+		            typeOptions.style.display = "block";
+		        } else if (category === "2") { // ラバー
+		            colorOptions.style.display = "block";
+		        } else if (category === "3") { // シューズ
+		            sizeOptions.style.display = "block";
+		        }
+		    }
+		
+			// ページ読み込み時にイベントリスナーを追加し、オプションを初期化
+			document.addEventListener('DOMContentLoaded', function() {
+			    updateOptions(); // 初期表示時にオプションを表示
+			    
+			    // カテゴリーが変更された際にオプションを更新
+			    document.getElementById("category").addEventListener("change", function() {
+			        updateOptions();
+			    });
+			});
 	</script>
 </head>
 <body>
@@ -52,14 +84,14 @@
 			<h1 class="center_text">新規商品追加</h1>
 		    <form action="#" th:action="@{/product/save}" th:object="${product}" method="post">		
 				<div class="text_zone">
-				    <label class="text_title" for="category">カテゴリー:</label>
-					<select class="text_area" id="category" th:field="*{category}" required>
-					    <option th:each="category : ${categories}" 
-					            th:value="${category.id}" 
-					            th:text="${category.name}">
-					    </option>
-					</select>
-				</div>
+			        <label class="text_title" for="category">カテゴリー:</label>
+			        <select class="text_area" id="category" th:field="*{category}" required>
+			            <option th:each="category : ${categories}" 
+			                    th:value="${category.id}" 
+			                    th:text="${category.name}">
+			            </option>
+			        </select>
+			    </div>
 				<div class="text_zone">
 		            <label class ="text_title" for="name">商品名:</label>
 		            <input class ="text_area" type="text" id="name" th:field="*{name}" required>
@@ -76,6 +108,29 @@
 		            <label class ="text_title" for="stock">在庫:</label>
 		            <input class ="text_area" type="number" id="stock" th:field="*{stock}" required>
 		        </div>
+				<!-- ラケット用のオプション (typeOptions) -->
+			    <div id="typeOptions" style="display:none">
+			        <label>ラケットの種類:</label>
+			        <div th:each="type : ${types}">
+			            <input type="checkbox" th:value="${type.id}" th:text="${type.name}" name="selectedTypes" />
+			        </div>
+			    </div>
+			
+			    <!-- ラバー用のオプション (colorOptions) -->
+			    <div id="colorOptions" style="display:none">
+			        <label>ラバーの色:</label>
+			        <div th:each="color : ${colors}">
+			            <input type="checkbox" th:value="${color.id}" th:text="${color.name}" name="selectedColors" />
+			        </div>
+			    </div>
+			
+			    <!-- シューズ用のオプション (sizeOptions) -->
+			    <div id="sizeOptions" style="display:none">
+			        <label>シューズのサイズ:</label>
+			        <div th:each="size : ${sizes}">
+			            <input type="checkbox" th:value="${size.id}" th:text="${size.name}" name="selectedSizes" />
+			        </div>
+			    </div>
 		        <div>
 		            <button class="center_button" type="submit">保存</button>
 		        </div>
