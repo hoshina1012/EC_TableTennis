@@ -1,0 +1,35 @@
+<dependencies>
+     Spring Boot Starter Web 
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+     Spring Boot Starter Security 
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-security</artifactId>
+    </dependency>
+     Spring Security Test (optional, for testing) 
+    <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-test</artifactId>
+        <scope>test</scope>
+    </dependency>
+     その他の依存関係 
+	<dependency>
+		<groupId>org.springframework.security</groupId>
+		<artifactId>spring-security-web</artifactId>
+	</dependency>
+	<dependency>
+		<groupId>org.springframework.security</groupId>
+		<artifactId>spring-security-config</artifactId>
+	</dependency>
+	<dependency>
+        <groupId>org.springframework.session</groupId>
+        <artifactId>spring-session-jdbc</artifactId>
+    </dependency>
+    <dependency>
+	    <groupId>org.thymeleaf.extras</groupId>
+	    <artifactId>thymeleaf-extras-springsecurity5</artifactId>
+</dependency>
+</dependencies>

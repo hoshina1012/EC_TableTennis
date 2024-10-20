@@ -1,0 +1,195 @@
+@charset "UTF-8";
+
+body{
+	margin: 0%;
+}
+
+.container{
+	max-width: 800px;
+	margin: 4%;
+
+    @media (min-width: 840px) {
+	margin: 4% auto;
+	}
+}
+
+.text_zone{
+	display: flex;
+	padding-bottom: 2%;
+    
+    @media (max-width: 600px) {
+		display: block;
+	padding-bottom: 4%;
+	}
+}
+
+.text_title {
+	text-align: right;
+	width: 25%;
+}
+
+.text_area{
+	width: 50%;
+    
+    @media (max-width: 600px) {
+		width: 98%;
+	}
+}
+
+.text_zone_half{
+	display: flex;
+	width: 50%;
+    
+    @media (max-width: 600px) {
+		width: 100%;
+	}
+}
+
+.text_area_half{
+	width: 49%;
+    
+    @media (max-width: 600px) {
+		width: 98%;
+	}
+}
+
+.center_text{
+	text-align: center;
+}
+
+.right_text{
+	text-align: right;
+}
+
+.left_text{
+	text-align: left;
+}
+
+.error_text{
+	text-align: center;
+	color: red;
+}
+
+.flex{
+	display: flex;
+}
+
+.center_button{
+	display: block;
+	width: 30%;
+    margin: 0 auto 3%;
+    font-size: 120%;
+    padding: 1% 0;
+    
+    @media (max-width: 600px) {
+		width: 80%;
+	}
+}
+
+.header_button{
+	width: 100%;
+	font-size: 100%;
+	margin: 0 5%;
+	color: white;
+	background-color: blue;
+	border: 0;
+  	text-decoration: underline;
+}
+
+.header_admin_button{
+	width: 100%;
+	font-size: 100%;
+	margin: 0 5%;
+	color: white;
+	background-color: orangered;
+	border: 0;
+  	text-decoration: underline;
+}
+
+.products_display{
+	display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    
+    @media (max-width: 600px) {
+    grid-template-columns: 1fr 1fr;
+	}
+    
+    @media (max-width: 400px) {
+    grid-template-columns: 1fr;
+	}
+}
+
+.product_design{
+	background-color: #ddffff;
+	margin: 2%;
+	padding: 3%;
+}
+
+.name_text{
+	font-size: 200%;
+}
+
+.price_text{
+	font-size: 160%;
+	text-align: right;
+}
+
+.price_format{
+	text-align: right;
+	margin: 0;
+}
+
+.header_container{
+	display: block;
+	background-color: blue;
+	padding: 2%;
+}
+
+.header_admin_container{
+	display: block;
+	background-color: orangered;
+	padding: 2%;
+}
+
+.header_logout{
+	display: flex;
+	justify-content: space-between;
+	max-width: 800px;
+    margin: auto;
+}
+
+.header_text{
+	color: white;
+    vertical-align: middle;
+}
+
+.cart_button{
+	margin-left: 15%;
+}
+
+.cart_quantity{
+	width: 40%;
+    margin-right: 5px;
+}
+
+.cart_update_button{
+	width: 60%;
+}
+
+.quantity{
+	padding-right: 2%;
+	text-align: right;
+}
+
+.success_message {
+    color: red;
+	text-align: center;
+}
+
+.my_product {
+    background-color: pink;
+}
+
+.pagination{
+	text-align: center;
+}
