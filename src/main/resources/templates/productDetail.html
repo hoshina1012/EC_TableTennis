@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">	
+	<link th:href="@{/css/content.css}" rel="stylesheet">
+<title>Insert title here</title>	
+	<script>
+	    // 数字を3桁ごとにカンマで区切る関数
+	    function formatPrice(price) {
+	        return '￥' + price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+	    }
+	
+	    // 商品価格をフォーマットする関数
+	    function formatProductPrices() {
+	        const priceElements = document.querySelectorAll('.price_text');
+	        priceElements.forEach((element) => {
+	            const price = element.textContent.replace('￥', '');
+	            element.textContent = formatPrice(price);
+	        });
+	    }
+	
+	    // DOMがロードされた後に商品価格をフォーマット
+	    document.addEventListener('DOMContentLoaded', formatProductPrices);
+	</script>
+</head>
+<body>
+	<div class="header_container">
+		<div class="header_logout">
+			<a class="header_text" th:href="@{/}">ECサイト</a>
+			<div>
+				<span th:if="${username != null}" class="flex">
+					<a class="header_text" th:href="@{/users/1}">ようこそ、<span th:text="${username}">ユーザー</span>さん！</a>
+					<a>　</a>
+					<a class="header_text" th:href="@{/cart}">カート</a>
+					<form th:action="@{/logout}" th:object="${user}" method="post">
+					    <div>
+					        <button class="header_button" type="submit">ログアウト</button>
+					    </div>
+					</form>
+	            </span>					
+				<span th:if="${username == null}">
+					<a class="header_text" th:href="@{/login}">ログイン</a>
+					<a class="header_text" th:href="@{/signUp}">新規会員登録</a>
+				</span>
+			</div>
+		</div>
+	</div>
+
+	<div class="container">
+		<h1 class="center_text">商品詳細</h1>		
+			<div class="product_design">		
+				<div th:text="'販売者ID：' + ${product.userId}"></div>
+				<div class="name_text" th:text="${product.name}"></div>
+				<div th:text="${product.description}"></div>
+				<div class="price_text" th:text="'￥' + ${product.price}"></div>
+				<div class="right_text" th:text="'在庫：' + ${product.stock}"></div>
+			</div>
+			
+		<div th:if="${loggedInUserId == 1 or product.userId == loggedInUserId}">
+			<h1 class="center_text">商品情報編集</h1>
+		    <form action="#" th:action="@{/productDetail/update}" th:object="${product}" method="post">
+		        <input type="hidden" th:field="*{id}">
+				<div class="text_zone">
+		            <label class ="text_title" for="name">商品名:</label>
+		            <input class ="text_area" type="text" id="name" th:field="*{name}" required>
+		        </div>
+				<div class="text_zone">
+		            <label class ="text_title" for="description">商品説明:</label>
+		            <textarea class ="text_area" id="description" th:field="*{description}" required></textarea>
+		        </div>
+				<div class="text_zone">
+		            <label class ="text_title" for="price">価格:</label>
+		            <input class ="text_area" type="number" id="price" th:field="*{price}" required>
+		        </div>
+				<div class="text_zone">
+		            <label class ="text_title" for="stock">在庫:</label>
+		            <input class ="text_area" type="number" id="stock" th:field="*{stock}" required>
+		        </div>
+		        <div>
+		            <button class="center_button" type="submit">更新</button>
+		        </div>
+		    </form>
+			<br>
+			<h1 class="center_text">商品削除</h1>
+		    <form action="#" th:action="@{/productDetail/delete}" th:object="${product}" method="post">
+		        <input type="hidden" th:field="*{id}">
+		        <div>
+		            <button class="center_button" type="submit">削除</button>
+		        </div>
+		    </form>
+		</div>		
+			
+		<div th:if="${loggedInUserId == 1 or product.userId != loggedInUserId}">
+			<h1 class="center_text">購入</h1>
+	            <div th:if="${initialQuantity != null}">
+	                <p class="center_text">既に商品がカートに入っています。</p>
+	            </div>
+	            <form th:action="@{/productDetail/addToCart}" method="post">
+	                <input type="hidden" name="productId" th:value="${product.id}">
+	                <div class="text_zone">
+	                    <label class ="text_title" for="quantity">数量:</label>
+	                    <input class ="text_area" type="number" id="quantity" name="quantity" th:value="${initialQuantity != null ? initialQuantity : 1}" min="1" required>
+	                </div>
+	                <div>
+	                    <button class="center_button" type="submit">カートに入れる</button>
+	                </div>
+	            </form>
+		</div>
+		<br>	
+		<div class="center_text">
+			<a th:href="@{/products}">商品一覧</a><br>
+			<a th:href="@{/}">トップページ</a>
+		</div>
+	</div>
+</body>
+</html>
