@@ -50,8 +50,9 @@
 	<div class="container">
 		<h1 class="center_text">商品一覧</h1>
 		<div class="products_display">		
-			<div class="product_design" th:each="product, iterStat : ${products}" th:if="${iterStat.index < 3}">			
-				<div th:text="'販売者ID：' + ${product.userId}"></div>
+			<div class="product_design" th:each="product, iterStat : ${products}" th:if="${iterStat.index < 3}">						
+				<div th:text="${product.category.name}"></div>
+				<div th:text="'販売者：' + ${product.user.userName}"></div>
 				<div class="name_text" th:text="${product.name}"></div>
 				<div th:text="${product.description}"></div>
 				<div class="price_text" th:text="'￥' + ${product.price}"></div>
