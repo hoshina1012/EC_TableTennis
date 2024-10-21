@@ -48,4 +48,19 @@ public class ProductsService {
             saveProduct(product);
         }
     }
+    
+    public Page<Products> fetchRackets(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return productsRepository.findAllByCategory_IdOrderByIdDesc(1L, pageable);
+    }
+    
+    public Page<Products> fetchRubbers(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return productsRepository.findAllByCategory_IdOrderByIdDesc(2L, pageable);
+    }
+    
+    public Page<Products> fetchShoes(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return productsRepository.findAllByCategory_IdOrderByIdDesc(3L, pageable);
+    }
 }

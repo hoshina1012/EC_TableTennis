@@ -48,7 +48,7 @@
 	</div>
 
 	<div class="container">
-		<h1 class="center_text">商品一覧</h1>
+		<h1 class="center_text">ラバー一覧</h1>
 		<div class="products_display">
             <div class="product_design" 
                  th:each="product : ${products}" 
@@ -75,6 +75,13 @@
 		<div class="center_text">		
 			<a th:href="@{/products/add}" th:if="${loggedInUserId != null and userStatus != 0}">新規商品追加</a><br>
 			<a th:href="@{/}">トップページ</a>			
+		</div><br><br>
+		<h2 class="center_text">カテゴリ別の商品一覧</h2>
+		<div class="center_text">		
+			<a th:href="@{/products/racket}">ラケット</a><br>						
+			<a th:href="@{/products/rubber}">ラバー</a><br>			
+			<a th:href="@{/products/shoes}">シューズ</a><br><br>
+			<a th:href="@{/products}">全ての商品一覧</a>
 		</div>
 	</div>
 </body>

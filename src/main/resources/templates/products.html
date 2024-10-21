@@ -75,6 +75,12 @@
 		<div class="center_text">		
 			<a th:href="@{/products/add}" th:if="${loggedInUserId != null and userStatus != 0}">新規商品追加</a><br>
 			<a th:href="@{/}">トップページ</a>			
+		</div><br><br>
+		<h2 class="center_text">カテゴリ別の商品一覧</h2>
+		<div class="center_text">		
+			<a th:href="@{/products/racket}">ラケット</a><br>						
+			<a th:href="@{/products/rubber}">ラバー</a><br>			
+			<a th:href="@{/products/shoes}">シューズ</a>
 		</div>
 	</div>
 </body>

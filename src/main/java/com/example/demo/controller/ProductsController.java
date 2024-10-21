@@ -85,6 +85,78 @@ public class ProductsController {
         return "products";
     }
 	
+    @GetMapping("/products/racket")
+    public String viewProductRackets(Model model, 
+                               @RequestParam(name = "page", defaultValue = "0") int page) {
+        int pageSize = 6;  // 1ページに表示する商品数
+        Page<Products> productsPage = productsService.fetchRackets(page, pageSize);
+        
+        model.addAttribute("products", productsPage.getContent());
+        model.addAttribute("product", new Products());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", productsPage.getTotalPages());
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String mailAddress = auth.getName();
+        Users user = usersService.findByMailAddress(mailAddress);
+
+        if(user != null) {
+            model.addAttribute("username", user.getUserName());
+            model.addAttribute("loggedInUserId", user.getId());
+            model.addAttribute("userStatus", user.getUserStatus());
+        }
+
+        return "productRackets";
+    }
+	
+    @GetMapping("/products/rubber")
+    public String viewProductRubbers(Model model, 
+                               @RequestParam(name = "page", defaultValue = "0") int page) {
+        int pageSize = 6;  // 1ページに表示する商品数
+        Page<Products> productsPage = productsService.fetchRubbers(page, pageSize);
+        
+        model.addAttribute("products", productsPage.getContent());
+        model.addAttribute("product", new Products());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", productsPage.getTotalPages());
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String mailAddress = auth.getName();
+        Users user = usersService.findByMailAddress(mailAddress);
+
+        if(user != null) {
+            model.addAttribute("username", user.getUserName());
+            model.addAttribute("loggedInUserId", user.getId());
+            model.addAttribute("userStatus", user.getUserStatus());
+        }
+
+        return "productRubbers";
+    }
+	
+    @GetMapping("/products/shoes")
+    public String viewProductShoes(Model model, 
+                               @RequestParam(name = "page", defaultValue = "0") int page) {
+        int pageSize = 6;  // 1ページに表示する商品数
+        Page<Products> productsPage = productsService.fetchShoes(page, pageSize);
+        
+        model.addAttribute("products", productsPage.getContent());
+        model.addAttribute("product", new Products());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", productsPage.getTotalPages());
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String mailAddress = auth.getName();
+        Users user = usersService.findByMailAddress(mailAddress);
+
+        if(user != null) {
+            model.addAttribute("username", user.getUserName());
+            model.addAttribute("loggedInUserId", user.getId());
+            model.addAttribute("userStatus", user.getUserStatus());
+        }
+
+        return "productShoes";
+    }
+	
     @GetMapping("/products/add")
     public String viewProductsAdd(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
