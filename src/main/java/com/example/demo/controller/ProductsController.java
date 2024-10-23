@@ -211,7 +211,9 @@ public class ProductsController {
             for (Long typeId : selectedTypes) {
                 RacketTypes racketType = new RacketTypes();
                 racketType.setProductId(savedProduct.getId()); // 保存された商品のID
-                racketType.setTypeId(typeId); // 選択されたタイプのID
+                
+                Types type = typesService.findById(typeId);
+                racketType.setType(type); // 選択されたタイプのID
                 racketTypesRepository.save(racketType); // データベースに保存
             }
         }
@@ -221,7 +223,9 @@ public class ProductsController {
             for (Long colorId : selectedColors) {
                 RubberColors rubberColor = new RubberColors();
                 rubberColor.setProductId(savedProduct.getId()); // 保存された商品のID
-                rubberColor.setColorId(colorId); // 選択された色のID
+                
+                Colors color = colorsService.findById(colorId);
+                rubberColor.setColor(color); // 色をセット
                 rubberColorsRepository.save(rubberColor); // データベースに保存
             }
         }
@@ -231,7 +235,9 @@ public class ProductsController {
             for (Long sizeId : selectedSizes) {
                 ShoesSizes shoesSize = new ShoesSizes();
                 shoesSize.setProductId(savedProduct.getId()); // 保存された商品のID
-                shoesSize.setSizeId(sizeId); // 選択されたサイズのID
+                
+                Sizes size = sizesService.findById(sizeId);
+                shoesSize.setSize(size); // 選択されたサイズのID
                 shoesSizesRepository.save(shoesSize); // データベースに保存
             }
         }

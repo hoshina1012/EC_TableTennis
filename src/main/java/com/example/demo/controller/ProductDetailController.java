@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,6 +15,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.entity.Carts;
 import com.example.demo.entity.Products;
+import com.example.demo.entity.RacketTypes;
+import com.example.demo.entity.RubberColors;
+import com.example.demo.entity.ShoesSizes;
 import com.example.demo.entity.Users;
 import com.example.demo.service.CartsService;
 import com.example.demo.service.ProductDetailService;
@@ -50,6 +55,18 @@ public class ProductDetailController {
             cartsService.findByUserIdAndProductId(loggedInUser, productId).ifPresent(cart -> {
                 model.addAttribute("initialQuantity", cart.getQuantity());
             });
+        }
+        
+        Long categoryId = product.getCategory().getId();
+        if (categoryId == 1) {  // ラケットの場合
+            List<RacketTypes> racketTypes = productDetailService.findRacketTypesByProductId(productId);
+            model.addAttribute("racketTypes", racketTypes);
+        } else if (categoryId == 2) {  // ラバーの場合
+            List<RubberColors> rubberColors = productDetailService.findRubberColorsByProductId(productId);
+            model.addAttribute("rubberColors", rubberColors);
+        } else if (categoryId == 3) {  // シューズの場合
+            List<ShoesSizes> shoesSizes = productDetailService.findShoesSizesByProductId(productId);
+            model.addAttribute("shoesSizes", shoesSizes);
         }
         
         

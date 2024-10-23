@@ -55,7 +55,31 @@
 				<div class="name_text" th:text="${product.name}"></div>
 				<div th:text="${product.description}"></div>
 				<div class="price_text" th:text="'￥' + ${product.price}"></div>
-				<div class="right_text" th:text="'在庫：' + ${product.stock}"></div>
+				<div class="right_text" th:text="'在庫：' + ${product.stock}"></div>				
+				
+				<!-- ラケットの型を表示 -->
+				<div th:if="${product.category.id == 1}">
+				    <h2>ラケットの型</h2>
+				    <ul>
+				        <li th:each="type : ${racketTypes}" th:text="${type.type.name}"></li>
+				    </ul>
+				</div>
+				
+				<!-- ラバーの色を表示 -->
+				<div th:if="${product.category.id == 2}">
+				    <h2>ラバーの色</h2>
+				    <ul>
+				        <li th:each="color : ${rubberColors}" th:text="${color.color.name}"></li>
+				    </ul>
+				</div>
+				
+				<!-- シューズのサイズを表示 -->
+				<div th:if="${product.category.id == 3}">
+				    <h2>シューズのサイズ</h2>
+				    <ul>
+				        <li th:each="size : ${shoesSizes}" th:text="${size.size.name}"></li>
+				    </ul>
+				</div>
 			</div>
 			
 		<div th:if="${loggedInUserId == 1 or product.userId == loggedInUserId}">

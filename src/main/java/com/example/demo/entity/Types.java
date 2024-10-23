@@ -17,4 +17,12 @@ public class Types {
     //データベーステーブルの列と対応して列名を指定
     @Column(name = "name")
 	public String name;
+    
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }
