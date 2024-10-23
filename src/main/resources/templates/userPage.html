@@ -92,7 +92,17 @@
 					<a th:href="@{/products/product_detail/{productId}(productId = ${product.id})}">詳細へ</a>
 				</div>
 			</div>
-		</div><br>
+		</div>
+		<div class="pagination">
+		    <a th:href="@{/users/{userId}(userId=${user.id}, page=${currentPage - 1})}"
+		       th:if="${currentPage > 0}">前へ</a>
+			   <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+	   		       <a th:href="@{/users/{userId}(userId=${user.id}, page=${i})}" th:text="${i + 1}" th:classappend="${i == currentPage} ? 'active' : ''"></a>
+	   		   </span>
+		    <a th:href="@{/users/{userId}(userId=${user.id}, page=${currentPage + 1})}"
+		       th:if="${currentPage + 1 < totalPages}">次へ</a>
+		</div>
+		<br>
 		<div class="center_text">
 			<a th:href="@{/products}">全ての商品を見る</a><br>
 			<a th:href="@{/products/add}" th:if="${loggedInUserId != null and userStatus != 0}">新規商品追加</a>

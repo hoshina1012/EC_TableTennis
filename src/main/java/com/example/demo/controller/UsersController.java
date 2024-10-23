@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.entity.Orders;
@@ -152,7 +154,9 @@ public class UsersController {
     }
 
     @GetMapping("/users/{userId}")
-    public String viewUser(@PathVariable Long userId, Model model) {
+    public String viewUser(@PathVariable Long userId, 
+            			   @RequestParam(defaultValue = "0") int page, 
+            			   Model model) {
     	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     	String mailAddress = auth.getName();
         Users loggedInUser = usersService.findByMailAddress(mailAddress);
@@ -169,8 +173,10 @@ public class UsersController {
         model.addAttribute("userStatus", user.getUserStatus());
 
         // ログイン中のユーザーIDと一致する商品のみを取得
-        List<Products> userProducts = productsService.fetchProductsByUserId(userId);
-        model.addAttribute("products", userProducts);
+        Page<Products> userProductsPage = productsService.fetchProductsByUserId(userId, page, 6);
+        model.addAttribute("products", userProductsPage.getContent());
+        model.addAttribute("totalPages", userProductsPage.getTotalPages());
+        model.addAttribute("currentPage", page);
 
         // ユーザーの注文履歴を取得
         List<Orders> userOrders = ordersService.findByUserId(userId);

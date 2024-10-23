@@ -63,4 +63,9 @@ public class ProductsService {
         Pageable pageable = PageRequest.of(page, size);
         return productsRepository.findAllByCategory_IdOrderByIdDesc(3L, pageable);
     }
+    
+    public Page<Products> fetchProductsByUserId(Long userId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return productsRepository.findByUser_Id(userId, pageable);
+    }
 }
