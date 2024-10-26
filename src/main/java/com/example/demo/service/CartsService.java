@@ -37,4 +37,8 @@ public class CartsService {
     public Carts findCartById(Long cartId) {
         return cartsRepository.findById(cartId).orElse(null);
     }
+    
+    public Optional<Carts> findByUserIdAndProductIdAndKindId(Long userId, Long productId, Long kindId) {
+        return cartsRepository.findByUserIdAndProductIdAndKindId(userId, productId, kindId);
+    }
 }

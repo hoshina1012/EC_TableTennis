@@ -122,7 +122,33 @@
 	                <p class="center_text">既に商品がカートに入っています。</p>
 	            </div>
 	            <form th:action="@{/productDetail/addToCart}" method="post">
-	                <input type="hidden" name="productId" th:value="${product.id}">
+	                <input type="hidden" name="productId" th:value="${product.id}">					
+					<input type="hidden" name="categoryId" th:value="${product.category.id}">
+					
+					<!-- ラケットの型をプルダウンで表示 -->
+				    <div th:if="${product.category.id == 1}">
+				        <label for="kindId">ラケットの型:</label>
+				        <select name="kindId" id="kindId" required>
+				            <option th:each="type : ${racketTypes}" th:value="${type.type.id}" th:text="${type.type.name}"></option>
+				        </select>
+				    </div>
+				
+				    <!-- ラバーの色をプルダウンで表示 -->
+				    <div th:if="${product.category.id == 2}">
+				        <label for="kindId">ラバーの色:</label>
+				        <select name="kindId" id="kindId" required>
+				            <option th:each="color : ${rubberColors}" th:value="${color.color.id}" th:text="${color.color.name}"></option>
+				        </select>
+				    </div>
+				
+				    <!-- シューズのサイズをプルダウンで表示 -->
+				    <div th:if="${product.category.id == 3}">
+				        <label for="kindId">シューズのサイズ:</label>
+				        <select name="kindId" id="kindId" required>
+				            <option th:each="size : ${shoesSizes}" th:value="${size.size.id}" th:text="${size.size.name}"></option>
+				        </select>
+				    </div>
+					
 	                <div class="text_zone">
 	                    <label class ="text_title" for="quantity">数量:</label>
 	                    <input class ="text_area" type="number" id="quantity" name="quantity" th:value="${initialQuantity != null ? initialQuantity : 1}" min="1" required>

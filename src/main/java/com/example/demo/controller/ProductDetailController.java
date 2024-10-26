@@ -86,21 +86,29 @@ public class ProductDetailController {
     }
 
     @PostMapping("/productDetail/addToCart")
-    public String addToCart(@RequestParam("productId") Long productId, @RequestParam("quantity") int quantity, Model model) {
+    public String addToCart(@RequestParam("productId") Long productId, 
+    						@RequestParam("quantity") int quantity, 
+    				        @RequestParam("kindId") Long kindId,
+    				        @RequestParam("categoryId") Long categoryId,
+    				        Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
         Users user = usersService.findByMailAddress(username);
 
         if (user != null) {
         	Long userId = user.getId();
-            cartsService.findByUserIdAndProductId(userId, productId).ifPresentOrElse(cart -> {
+            cartsService.findByUserIdAndProductIdAndKindId(userId, productId, kindId).ifPresentOrElse(cart -> {
                 cart.setQuantity(quantity);
+                cart.setKindId(kindId);
+                cart.setCategoryId(categoryId);
                 cartsService.saveCart(cart);
             }, () -> {
                 Carts newCart = new Carts();
                 newCart.setUserId(userId);
                 newCart.setProductId(productId);
                 newCart.setQuantity(quantity);
+                newCart.setKindId(kindId);
+                newCart.setCategoryId(categoryId);
                 cartsService.saveCart(newCart);
             });
         }

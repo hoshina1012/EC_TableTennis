@@ -33,10 +33,30 @@ public class Carts {
     @UpdateTimestamp //コードの作成日時と更新日時を自動的に設定
     @Column(name = "updated_at")
     private Timestamp updatedAt;
+    @Column(name = "category_id")
+	public Long categoryId;
+    @Column(name = "kind_id")
+	public Long kindId;
 
     @Transient
     private String productName;
 
     @Transient
     private int productPrice;
+    
+    public Long getKindId() {
+        return kindId;
+    }
+
+    public void setKindId(Long kindId) {
+        this.kindId = kindId;
+    }
+
+    public Long getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
+    }
 }
