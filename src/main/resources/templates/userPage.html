@@ -81,8 +81,8 @@
             </div>
         </form><br>		
 		
-		<h1 class="center_text">マイ商品</h1>
-		<div class="products_display">
+		<h1 class="center_text"	th:if="${user.userStatus == 1}">マイ商品</h1>
+		<div class="products_display" th:if="${user.userStatus == 1}">
 			<div class="product_design" th:each="product:${products}">			
 				<div th:text="'販売者ID：' + ${product.userId}"></div>
 				<div class="name_text" th:text="${product.name}"></div>
@@ -93,7 +93,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="pagination">
+		<div class="pagination"	th:if="${user.userStatus == 1}">
 		    <a th:href="@{/users/{userId}(userId=${user.id}, page=${currentPage - 1})}"
 		       th:if="${currentPage > 0}">前へ</a>
 			   <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
@@ -103,14 +103,14 @@
 		       th:if="${currentPage + 1 < totalPages}">次へ</a>
 		</div>
 		<br>
-		<div class="center_text">
+		<div class="center_text" th:if="${user.userStatus == 1}">
 			<a th:href="@{/products}">全ての商品を見る</a><br>
-			<a th:href="@{/products/add}" th:if="${loggedInUserId != null and userStatus != 0}">新規商品追加</a>
-		</div><br><br>		
+			<a th:href="@{/products/add}" th:if="${loggedInUserId != null and userStatus != 0}">新規商品追加</a><br><br>
+		</div>		
 		
 		<!-- 注文履歴を表示 -->
-		<h1 class="center_text">注文履歴</h1>
-		<table class="center_text">
+		<h1 class="center_text"	th:if="${user.userStatus == 0}">注文履歴</h1>
+		<table class="center_text" th:if="${user.userStatus == 0}">
 		    <thead>
 		        <tr>
 		            <th	width="10%">商品ID</th>
@@ -134,13 +134,13 @@
                 </tr>
 		    </tbody>
 		</table><br>		
-		<div class="center_text">
-			<a th:href="@{/orderHistory}">全ての注文履歴を見る</a>
-		</div><br><br>		
+		<div class="center_text" th:if="${user.userStatus == 0}">
+			<a th:href="@{/orderHistory}">全ての注文履歴を見る</a><br><br>
+		</div>		
 				
-		<h1 class="center_text">受注履歴</h1>		
-		<div class="center_text">未発送の商品は、速やかに発送を行いましょう</div><br>
-		<table class="center_text">
+		<h1 class="center_text"	th:if="${user.userStatus == 1}">受注履歴</h1>		
+		<div class="center_text" th:if="${user.userStatus == 1}">未発送の商品は、速やかに発送を行いましょう</div><br>
+		<table class="center_text" th:if="${user.userStatus == 1}">
 		    <thead>
 		        <tr>
 		            <th width="10%">商品ID</th>
@@ -164,9 +164,9 @@
 		        </tr>
 		    </tbody>
 		</table><br>		
-		<div class="center_text">
-			<a th:href="@{/orderManagement}">全ての注文管理を見る</a>
-		</div><br><br>
+		<div class="center_text" th:if="${user.userStatus == 1}">
+			<a th:href="@{/orderManagement}">全ての注文管理を見る</a><br><br>
+		</div>
 		
 		<h1 class="center_text">お問い合わせ</h1>
 		<div class="center_text">
