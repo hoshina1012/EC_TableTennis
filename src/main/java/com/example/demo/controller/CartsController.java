@@ -44,6 +44,7 @@ public class CartsController {
                 Products product = productDetailService.fetchProductById(cart.getProductId());
                 cart.setProductName(product.getName());
                 cart.setProductPrice(product.getPrice());
+                cart.setKindName(cartsService.getKindName(cart.getCategoryId(), cart.getKindId())); // 種類の設定
                 totalAmount += cart.getProductPrice() * cart.getQuantity();
             }
 

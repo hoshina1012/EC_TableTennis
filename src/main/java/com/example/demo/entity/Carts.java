@@ -44,6 +44,9 @@ public class Carts {
     @Transient
     private int productPrice;
     
+    @Transient
+    private String kindName;
+    
     public Long getKindId() {
         return kindId;
     }

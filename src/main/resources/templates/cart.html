@@ -53,9 +53,10 @@
             <thead>
                 <tr>
                     <th width="10%">商品ID</th>
-                    <th	width="35%">商品名</th>						
+                    <th	width="30%">商品名</th>											
+					<th width="10%">種類</th>
 					<th	width="15%">単価</th>
-                    <th width="30%" class="left_text">数量</th>						
+                    <th width="25%" class="left_text">数量</th>						
 					<th	width="10%"></th>
                 </tr>
             </thead>
@@ -64,7 +65,8 @@
                     <td	class="right_text" th:text="${cart.productId}">Product ID</td>
 					<td	class="center_text">
                         <a th:href="@{/products/product_detail/{productId}(productId=${cart.productId})}" th:text="${cart.productName}">Product Name</a>
-                    </td>
+                    </td>						
+					<td th:text="${cart.kindName}">種類</td>
 					<td class="price_format" th:text="'￥' + ${cart.productPrice}">Product Price</td>
 					<td>
 					    <form class="flex" th:action="@{/cart/updateQuantity}" method="post">
