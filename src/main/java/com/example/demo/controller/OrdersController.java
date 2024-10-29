@@ -58,6 +58,7 @@ public class OrdersController {
                 Products product = productDetailService.fetchProductById(cart.getProductId());
                 cart.setProductName(product.getName());
                 cart.setProductPrice(product.getPrice());
+                cart.setKindName(cartsService.getKindName(cart.getCategoryId(), cart.getKindId())); 
                 totalAmount += cart.getProductPrice() * cart.getQuantity();
             }
 
@@ -128,6 +129,7 @@ public class OrdersController {
 
                 order.setQuantity(cart.getQuantity());
                 order.setOrderStatus(0); // 注文ステータスを適切に設定
+                order.setKindId(cart.getKindId());
                 ordersService.saveOrder(order);
 
                 // カートアイテムを削除

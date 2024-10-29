@@ -125,7 +125,8 @@
             <thead>
                 <tr>
                     <th width="10%">商品ID</th>
-                    <th width="55%">商品名</th>                        
+                    <th width="45%">商品名</th>                        					
+					<th width="10%">種類</th>
                     <th width="15%">単価</th>
                     <th width="10%">数量</th>
                 </tr>
@@ -133,7 +134,8 @@
             <tbody>
                 <tr th:each="cart : ${cartItems}">
                     <td class="right_text" th:text="${cart.productId}">Product ID</td>
-                    <td class="center_text" th:text="${cart.productName}">Product Name</td>
+                    <td class="center_text" th:text="${cart.productName}">Product Name</td>					
+					<td th:text="${cart.kindName}">種類</td>
                     <td class="price_format" th:text="'￥' + ${cart.productPrice}">Product Price</td>
                     <td class="right_text" th:text="${cart.quantity}">Quantity</td>
                 </tr>

@@ -35,6 +35,8 @@ public class Orders {
     @UpdateTimestamp //コードの作成日時と更新日時を自動的に設定
     @Column(name = "updated_at")
     private Timestamp updatedAt;
+    @Column(name = "kind_id")
+	public Long kindId;
 
     // Many-to-Oneの関連を定義してProductsテーブルと結びつける
     @ManyToOne(fetch = FetchType.LAZY)
