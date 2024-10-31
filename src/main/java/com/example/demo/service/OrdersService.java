@@ -10,13 +10,28 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.entity.Colors;
 import com.example.demo.entity.Orders;
+import com.example.demo.entity.Sizes;
+import com.example.demo.entity.Types;
+import com.example.demo.repository.ColorsRepository;
 import com.example.demo.repository.OrdersRepository;
+import com.example.demo.repository.SizesRepository;
+import com.example.demo.repository.TypesRepository;
 
 @Service
 public class OrdersService {
     @Autowired
     private OrdersRepository ordersRepository;
+
+    @Autowired
+    private TypesRepository typesRepository;
+
+    @Autowired
+    private ColorsRepository colorsRepository;
+
+    @Autowired
+    private SizesRepository sizesRepository;
 
     public void saveOrder(Orders order) {
         ordersRepository.save(order);
@@ -61,5 +76,20 @@ public class OrdersService {
 	
 	public long calculateAmount(Orders order) {
         return order.getProduct().getPrice() * order.getQuantity();
+    }
+	
+	// 型を取得するメソッド
+    public String getRacketTypeName(Long typeId) {
+        return typesRepository.findById(typeId).map(Types::getName).orElse("N/A");
+    }
+
+    // 色を取得するメソッド
+    public String getRubberColorName(Long colorId) {
+        return colorsRepository.findById(colorId).map(Colors::getName).orElse("N/A");
+    }
+
+    // サイズを取得するメソッド
+    public String getShoeSizeName(Long sizeId) {
+        return sizesRepository.findById(sizeId).map(Sizes::getName).orElse("N/A");
     }
 }

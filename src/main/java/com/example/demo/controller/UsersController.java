@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.demo.entity.Categories;
 import com.example.demo.entity.Orders;
 import com.example.demo.entity.Products;
 import com.example.demo.entity.Users;
@@ -186,6 +187,41 @@ public class UsersController {
         List<Orders> managedOrders = ordersService.fetchOrders().stream()
                 .filter(order -> order.getProduct().getUser().getId().equals(userId))  // 修正箇所
                 .collect(Collectors.toList());
+        model.addAttribute("managedOrders", managedOrders);
+        
+        List<Orders> userOrders2 = ordersService.findByUserId(userId);
+        userOrders2.forEach(order -> {
+            Long kindId = order.getKindId();
+            String kindName = "N/A";
+            Categories category = order.getProduct().getCategory();
+            if ("ラケット".equals(category.getName())) {
+                kindName = ordersService.getRacketTypeName(kindId);
+            } else if ("ラバー".equals(category.getName())) {
+                kindName = ordersService.getRubberColorName(kindId);
+            } else if ("シューズ".equals(category.getName())) {
+                kindName = ordersService.getShoeSizeName(kindId);
+            }
+            order.setKindName(kindName);  // 表示用のkindNameを追加
+        });
+        model.addAttribute("orders", userOrders);
+        
+        List<Orders> managedOrders2 = ordersService.fetchOrders().stream()
+                .filter(order -> order.getProduct().getUser().getId().equals(userId))
+                .collect(Collectors.toList());
+        managedOrders2.forEach(order -> {
+            Long kindId = order.getKindId();
+            String kindName = "N/A";
+            Categories category = order.getProduct().getCategory();
+
+            if ("ラケット".equals(category.getName())) {
+                kindName = ordersService.getRacketTypeName(kindId);
+            } else if ("ラバー".equals(category.getName())) {
+                kindName = ordersService.getRubberColorName(kindId);
+            } else if ("シューズ".equals(category.getName())) {
+                kindName = ordersService.getShoeSizeName(kindId);
+            }
+            order.setKindName(kindName);  // 表示用のkindNameを設定
+        });
         model.addAttribute("managedOrders", managedOrders);
 
         return "userPage";

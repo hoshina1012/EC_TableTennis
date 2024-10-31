@@ -13,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.Data;
 @Entity(name = "orders")
 @Data //Lombokアノテーションでgetter、setterなどを自動生成
@@ -49,5 +50,19 @@ public class Orders {
 
     public Users getUser() {
         return user;
+    }
+    
+ // 表示用のフィールド（データベースに保存しないため @Transient を使用）
+    @Transient
+    private String kindName;
+
+    // getKindName メソッド
+    public String getKindName() {
+        return kindName;
+    }
+
+    // setKindName メソッド
+    public void setKindName(String kindName) {
+        this.kindName = kindName;
     }
 }
