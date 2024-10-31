@@ -53,7 +53,8 @@
 		    <thead>
 		        <tr>
 		            <th	width="10%">商品ID</th>
-		            <th	width="35%">商品名</th>
+		            <th	width="25%">商品名</th>
+					<th width="10%">種類</th>
 		            <th	width="15%">単価</th>
 		            <th	width="10%">数量</th>
 		            <th	width="15%">注文日</th>					
@@ -65,7 +66,8 @@
                     <td	class="right_text" th:text="${order.product.id}"></td>					
 					<td>
 					    <a th:href="@{/products/product_detail/{productId}(productId = ${order.product.id})}" th:text="${order.product.name}"></a>
-					</td>
+					</td>					
+					<td th:text="${order.kindName}"></td>
                     <td	class="price_format" th:text="'￥' + ${order.product.price}"></td>
                     <td	class="quantity" th:text="${order.quantity}"></td>
                     <td th:text="${#dates.format(order.createdAt, 'yyyy/MM/dd')}"></td>					

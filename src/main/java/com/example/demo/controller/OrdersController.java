@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.entity.Carts;
+import com.example.demo.entity.Categories;
 import com.example.demo.entity.Orders;
 import com.example.demo.entity.Payments;
 import com.example.demo.entity.Products;
@@ -174,6 +175,22 @@ public class OrdersController {
 
         if (user != null) {
             List<Orders> orders = ordersService.findByUserId(user.getId());
+            
+            orders.forEach(order -> {
+                Long kindId = order.getKindId();
+                String kindName = "N/A";
+                Categories category = order.getProduct().getCategory();
+
+                if ("ラケット".equals(category.getName())) {
+                    kindName = ordersService.getRacketTypeName(kindId);
+                } else if ("ラバー".equals(category.getName())) {
+                    kindName = ordersService.getRubberColorName(kindId);
+                } else if ("シューズ".equals(category.getName())) {
+                    kindName = ordersService.getShoeSizeName(kindId);
+                }
+                order.setKindName(kindName);  // 表示用のkindNameを設定
+            });
+            
             model.addAttribute("orders", orders);
             model.addAttribute("username", user.getUserName());
         }
