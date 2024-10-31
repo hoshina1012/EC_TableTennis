@@ -207,6 +207,22 @@ public class OrdersController {
 	    if (user != null) {
 	        // ユーザーが販売者の注文を取得
 	        List<Orders> managedOrders = ordersService.findOrdersBySellerId(user.getId());
+	        
+	        managedOrders.forEach(order -> {
+                Long kindId = order.getKindId();
+                String kindName = "N/A";
+                Categories category = order.getProduct().getCategory();
+
+                if ("ラケット".equals(category.getName())) {
+                    kindName = ordersService.getRacketTypeName(kindId);
+                } else if ("ラバー".equals(category.getName())) {
+                    kindName = ordersService.getRubberColorName(kindId);
+                } else if ("シューズ".equals(category.getName())) {
+                    kindName = ordersService.getShoeSizeName(kindId);
+                }
+                order.setKindName(kindName);  // 表示用のkindNameを設定
+            });
+	        
 	        model.addAttribute("managedOrders", managedOrders);
 	        model.addAttribute("username", user.getUserName());
 	    }
