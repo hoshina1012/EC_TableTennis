@@ -109,6 +109,57 @@ public class AdminController {
         return "redirect:/";
     }
     
+    @GetMapping("/admin/seller")
+    public String viewAdminSellerPage(@RequestParam(value = "page", defaultValue = "0") int page, Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String mailAddress = auth.getName();
+        Users user = usersService.findByMailAddress(mailAddress);
+
+        if (user != null && (user.getId() == 1 || user.getUserAuthority() == 1)) {
+            model.addAttribute("username", user.getUserName());
+            
+            int pageSize = 5; // 1ページあたりのユーザー数
+            Page<Users> usersPage = usersService.fetchUsers2(page, pageSize);
+            model.addAttribute("usersPage", usersPage);
+            model.addAttribute("currentPage", page);
+            model.addAttribute("totalPages", usersPage.getTotalPages());
+
+            // すべてのユーザーを取得してモデルに追加
+            List<Users> usersList = usersService.fetchUsers();
+            model.addAttribute("usersList", usersList);
+            
+            List<Integer> productCounts = usersList.stream()
+                    .map(u -> u.getProducts().size())
+                    .collect(Collectors.toList());
+            model.addAttribute("productCounts", productCounts);
+            
+            Map<Long, Long> orderCounts = usersList.stream()
+                    .collect(Collectors.toMap(
+                            Users::getId,
+                            u -> ordersService.countOrdersByUserId(u.getId())
+                    ));
+            model.addAttribute("orderCounts", orderCounts);
+            
+            Map<Long, Long> receivedOrderCounts = usersList.stream()
+                    .collect(Collectors.toMap(
+                            Users::getId,
+                            u -> ordersService.countOrdersByProductOwnerId(u.getId())
+                    ));
+            model.addAttribute("receivedOrderCounts", receivedOrderCounts);
+            
+            Map<Long, Long> helpCounts = usersList.stream()
+                    .collect(Collectors.toMap(
+                    		Users::getId,
+                    		u -> helpsService.countHelpsByUserId(u.getId())
+                    ));
+            model.addAttribute("helpCounts", helpCounts);
+
+            return "adminSeller"; // ユーザー一覧ページのビュー名
+        }
+
+        return "redirect:/";
+    }
+    
     @PostMapping("/admin/toggleAuthority")
     public ResponseEntity<String> toggleAuthority(@RequestParam Long userId, @RequestParam int newAuthority) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

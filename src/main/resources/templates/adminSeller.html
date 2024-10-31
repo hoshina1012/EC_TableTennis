@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+	<meta name="_csrf" th:content="${_csrf.token}">	
+	<link th:href="@{/css/content.css}" rel="stylesheet">
+    <title>カート</title>	
+	<script>
+	    // 数字を3桁ごとにカンマで区切る関数
+	    function formatPrice(price) {
+	        return '￥' + price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+	    }
+	
+	    // 商品価格をフォーマットする関数
+	    function formatProductPrices() {
+	        const priceElements = document.querySelectorAll('.price_format');
+	        priceElements.forEach((element) => {
+	            const price = element.textContent.replace('￥', '');
+	            element.textContent = formatPrice(price);
+	        });
+	    }
+	
+	    // DOMがロードされた後に商品価格をフォーマット
+	    document.addEventListener('DOMContentLoaded', formatProductPrices);
+		
+		
+		function toggleAuthority(userId, newAuthority) {
+		        const xhr = new XMLHttpRequest();
+		        xhr.open("POST", "/admin/toggleAuthority", true);
+		        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+				
+				const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+				xhr.setRequestHeader("X-CSRF-TOKEN", csrfToken);
+		
+		        xhr.onreadystatechange = function() {
+		            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+		                // 成功時、ページをリロードして更新内容を反映
+		                location.reload();
+		            }
+		        };
+		
+		        xhr.send(`userId=${userId}&newAuthority=${newAuthority}`);
+		    }
+			
+		const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+	</script>
+</head>
+<body>
+    <div class="header_admin_container">
+        <div class="header_logout">
+            <a class="header_text" th:href="@{/}">ECサイト</a>
+            <div>
+                <span th:if="${username != null}" class="flex">
+					<a class="header_text" th:href="@{/users/1}">ようこそ、<span th:text="${username}">ユーザー</span>さん！</a>
+					<a>　</a>
+					<a class="header_text" th:href="@{/cart}">カート</a>
+                    <form th:action="@{/logout}" method="post">
+                        <div>
+                            <button class="header_admin_button" type="submit">ログアウト</button>
+                        </div>
+                    </form>
+                </span>
+                <span th:if="${username == null}">
+                    <a class="header_text" th:href="@{/login}">ログイン</a>
+                    <a class="header_text" th:href="@{/signUp}">新規会員登録</a>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">	
+		<div class="center_text">
+			<a th:href="@{/admin}">管理画面に戻る</a>
+		</div>
+		<h1 class="center_text">ユーザー一覧</h1>
+		<table>
+		    <tr>
+		        <th>ID</th>
+		        <th>名前</th>
+		        <th>メールアドレス</th>
+		        <th>登録商品数</th>				
+				<th>注文数</th>				
+				<th>受注数</th>				
+				<th>問い合わせ数</th>				
+				<th>管理者権限</th>
+				<th></th>
+		    </tr>
+			<tr th:each="user, iterStat : ${usersPage.content}">
+		        <td class="right_text" th:text="${user.id}"></td>
+		        <td th:text="${user.userName}"></td>
+		        <td th:text="${user.mailAddress}"></td>
+		        <td	class="right_text" th:text="${productCounts[iterStat.index]}"></td>				
+				<td	class="right_text" th:text="${orderCounts[user.id]}"></td>				
+				<td	class="right_text" th:text="${receivedOrderCounts[user.id]}"></td>				
+				<td	class="right_text" th:text="${helpCounts[user.id]}"></td>				
+				<td class="center_text">
+				    <span th:if="${user.id == 1}" th:text="'有'"></span>
+				    <button th:if="${user.id != 1 && user.userAuthority == 0}" th:text="'無'" 
+				            th:attr="onclick='toggleAuthority(' + ${user.id} + ', 1)'"></button>
+				    <button th:if="${user.id != 1 && user.userAuthority == 1}" th:text="'有'" 
+				            th:attr="onclick='toggleAuthority(' + ${user.id} + ', 0)'"></button>
+				</td>
+				<td>
+				    <a th:href="@{/users/{userId}(userId=${user.id})}" class="edit-link">編集</a>
+				</td>
+		    </tr>
+		</table><br>
+		<div class="pagination">
+		    <a th:href="@{/admin/user(page=${currentPage - 1})}" th:if="${currentPage > 0}">前へ</a>
+		    
+		    <!-- 前の3ページ -->
+		    <span th:if="${currentPage > 2}">
+		        <a th:href="@{/admin/user(page=${currentPage - 3})}" th:text="${currentPage - 2}"></a>
+		    </span>
+		    <span th:if="${currentPage > 1}">
+		        <a th:href="@{/admin/user(page=${currentPage - 2})}" th:text="${currentPage - 1}"></a>
+		    </span>
+		    <span th:if="${currentPage > 0}">
+		        <a th:href="@{/admin/user(page=${currentPage - 1})}" th:text="${currentPage}"></a>
+		    </span>
+		    
+		    <!-- 現在のページ -->
+		    <span th:text="${currentPage + 1}" class="active"></span>
+		    
+		    <!-- 次の3ページ -->
+		    <span th:if="${currentPage < totalPages - 1}">
+		        <a th:href="@{/admin/user(page=${currentPage + 1})}" th:text="${currentPage + 2}"></a>
+		    </span>
+		    <span th:if="${currentPage < totalPages - 2}">
+		        <a th:href="@{/admin/user(page=${currentPage + 2})}" th:text="${currentPage + 3}"></a>
+		    </span>
+		    <span th:if="${currentPage < totalPages - 3}">
+		        <a th:href="@{/admin/user(page=${currentPage + 3})}" th:text="${currentPage + 4}"></a>
+		    </span>
+		    
+		    <a th:href="@{/admin/user(page=${currentPage + 1})}" th:if="${currentPage < totalPages - 1}">次へ</a>
+		</div>
+    </div>
+</body>
+</html>
