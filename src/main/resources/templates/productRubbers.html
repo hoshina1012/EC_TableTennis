@@ -65,11 +65,11 @@
             </div>
         </div>			
 		<div class="pagination">
-		    <a th:href="@{/products(page=${currentPage - 1})}" th:if="${currentPage > 0}">前へ</a>
+		    <a th:href="@{/products/rubber(page=${currentPage - 1})}" th:if="${currentPage > 0}">前へ</a>
 		    <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
-		        <a th:href="@{/products(page=${i})}" th:text="${i + 1}" th:classappend="${i == currentPage} ? 'active' : ''"></a>
+		        <a th:href="@{/products/rubber(page=${i})}" th:text="${i + 1}" th:classappend="${i == currentPage} ? 'active' : ''"></a>
 		    </span>
-		    <a th:href="@{/products(page=${currentPage + 1})}" th:if="${currentPage < totalPages - 1}">次へ</a>
+		    <a th:href="@{/products/rubber(page=${currentPage + 1})}" th:if="${currentPage < totalPages - 1}">次へ</a>
 		</div>
 		<br>
 		<div class="center_text">		
