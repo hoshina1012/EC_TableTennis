@@ -68,13 +68,13 @@ public class AdminController {
             model.addAttribute("username", user.getUserName());
             
             int pageSize = 5; // 1ページあたりのユーザー数
-            Page<Users> usersPage = usersService.fetchUsers2(page, pageSize);
+            Page<Users> usersPage = usersService.fetch0Users2(page, pageSize);
             model.addAttribute("usersPage", usersPage);
             model.addAttribute("currentPage", page);
             model.addAttribute("totalPages", usersPage.getTotalPages());
 
             // すべてのユーザーを取得してモデルに追加
-            List<Users> usersList = usersService.fetchUsers();
+            List<Users> usersList = usersService.fetch0Users();
             model.addAttribute("usersList", usersList);
             
             List<Integer> productCounts = usersList.stream()
@@ -119,13 +119,13 @@ public class AdminController {
             model.addAttribute("username", user.getUserName());
             
             int pageSize = 5; // 1ページあたりのユーザー数
-            Page<Users> usersPage = usersService.fetchUsers2(page, pageSize);
+            Page<Users> usersPage = usersService.fetch1Users2(page, pageSize);
             model.addAttribute("usersPage", usersPage);
             model.addAttribute("currentPage", page);
             model.addAttribute("totalPages", usersPage.getTotalPages());
 
             // すべてのユーザーを取得してモデルに追加
-            List<Users> usersList = usersService.fetchUsers();
+            List<Users> usersList = usersService.fetch1Users();
             model.addAttribute("usersList", usersList);
             
             List<Integer> productCounts = usersList.stream()

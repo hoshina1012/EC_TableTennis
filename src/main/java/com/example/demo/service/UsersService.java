@@ -29,6 +29,26 @@ public class UsersService {
 	    return usersRepository.findAll(pageable);
 	}
 	
+	public List<Users> fetch0Users() {
+        return usersRepository.findAllByUserStatusOrderByIdAsc(0);
+    }
+
+    // user_statusが0のユーザーをページングして取得、IDの昇順で並べ替える
+    public Page<Users> fetch0Users2(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "id"));
+        return usersRepository.findAllByUserStatusOrderByIdAsc(0, pageable);
+    }
+	
+	public List<Users> fetch1Users() {
+        return usersRepository.findAllByUserStatusOrderByIdAsc(1);
+    }
+
+    // user_statusが0のユーザーをページングして取得、IDの昇順で並べ替える
+    public Page<Users> fetch1Users2(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "id"));
+        return usersRepository.findAllByUserStatusOrderByIdAsc(1, pageable);
+    }
+	
 	public Users saveUser(Users user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return usersRepository.save(user);
