@@ -126,25 +126,25 @@
 					<input type="hidden" name="categoryId" th:value="${product.category.id}">
 					
 					<!-- ラケットの型をプルダウンで表示 -->
-				    <div th:if="${product.category.id == 1}">
-				        <label for="kindId">ラケットの型:</label>
-				        <select name="kindId" id="kindId" required>
+				    <div class="text_zone" th:if="${product.category.id == 1}">
+				        <label class ="text_title" for="kindId">ラケットの型:</label>
+				        <select class ="text_area" name="kindId" id="kindId" required>
 				            <option th:each="type : ${racketTypes}" th:value="${type.type.id}" th:text="${type.type.name}"></option>
 				        </select>
 				    </div>
 				
 				    <!-- ラバーの色をプルダウンで表示 -->
-				    <div th:if="${product.category.id == 2}">
-				        <label for="kindId">ラバーの色:</label>
-				        <select name="kindId" id="kindId" required>
+				    <div class="text_zone" th:if="${product.category.id == 2}">
+				        <label class ="text_title" for="kindId">ラバーの色:</label>
+				        <select class ="text_area" name="kindId" id="kindId" required>
 				            <option th:each="color : ${rubberColors}" th:value="${color.color.id}" th:text="${color.color.name}"></option>
 				        </select>
 				    </div>
 				
 				    <!-- シューズのサイズをプルダウンで表示 -->
-				    <div th:if="${product.category.id == 3}">
-				        <label for="kindId">シューズのサイズ:</label>
-				        <select name="kindId" id="kindId" required>
+				    <div class="text_zone" th:if="${product.category.id == 3}">
+				        <label class ="text_title" for="kindId">シューズのサイズ:</label>
+				        <select class ="text_area" name="kindId" id="kindId" required>
 				            <option th:each="size : ${shoesSizes}" th:value="${size.size.id}" th:text="${size.size.name}"></option>
 				        </select>
 				    </div>
