@@ -92,4 +92,19 @@ public class OrdersService {
     public String getShoeSizeName(Long sizeId) {
         return sizesRepository.findById(sizeId).map(Sizes::getName).orElse("N/A");
     }
+    
+    public String getTypeNameByCategory(Orders order) {
+        Long kindId = order.getKindId();  // `kindId`を取得
+        String categoryName = order.getProduct().getCategoryName();
+
+        if ("ラケット".equals(categoryName)) {
+            return getRacketTypeName(kindId); // ラケットの型名を取得
+        } else if ("ラバー".equals(categoryName)) {
+            return getRubberColorName(kindId); // ラバーの色名を取得
+        } else if ("シューズ".equals(categoryName)) {
+            return getShoeSizeName(kindId); // シューズのサイズ名を取得
+        } else {
+            return "N/A";
+        }
+    }
 }

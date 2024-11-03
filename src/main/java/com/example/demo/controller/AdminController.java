@@ -299,6 +299,8 @@ public class AdminController {
             Orders order = ordersService.findOrderById(orderId);
             if (order != null) {
                 model.addAttribute("order", order);
+                String typeName = ordersService.getTypeNameByCategory(order);
+                model.addAttribute("typeName", typeName);
                 return "orderDetail"; // 注文詳細ページのビュー名
             } else {
                 return "redirect:/admin/order"; // 注文が存在しない場合、注文一覧ページにリダイレクト

@@ -59,6 +59,10 @@
 	            <th>商品名</th>
 	            <td th:text="${order.product.name}"></td>
 	        </tr>
+			<tr>
+			    <th>種類</th>
+				<td th:text="${typeName}"></td>
+			</tr>
 	        <tr>
 	            <th>数量</th>
 	            <td	class="right_text" th:text="${order.quantity}"></td>
