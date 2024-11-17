@@ -13,11 +13,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.entity.Carts;
 import com.example.demo.entity.Categories;
+import com.example.demo.entity.OrderItems;
 import com.example.demo.entity.Orders;
 import com.example.demo.entity.Payments;
 import com.example.demo.entity.Products;
 import com.example.demo.entity.Users;
 import com.example.demo.service.CartsService;
+import com.example.demo.service.OrderItemsService;
 import com.example.demo.service.OrdersService;
 import com.example.demo.service.PaymentsService;
 import com.example.demo.service.ProductDetailService;
@@ -43,6 +45,9 @@ public class OrdersController {
 
     @Autowired
     private ProductsService productsService;
+
+    @Autowired
+    private OrderItemsService orderItemsService;
 
     @GetMapping("/order")
     public String checkout(Model model) {
@@ -115,23 +120,37 @@ public class OrdersController {
 
             paymentsService.savePayment(payment);
 
-            // カート内の各商品についてOrdersエンティティを作成し、保存
+         // カート内の各商品について注文を作成
             List<Carts> cartItems = cartsService.findByUserId(user.getId());
+
+            // 合計金額の計算
+            int totalAmount = 0;
             for (Carts cart : cartItems) {
+                Products product = productsService.findProductById(cart.getProductId());
+                totalAmount += product.getPrice() * cart.getQuantity();  // 合計金額を計算
+            }
+
+            // 注文を作成し、保存
+            Orders order = new Orders();
+            order.setUserId(user.getId());
+            order.setAmount(totalAmount);  // 合計金額を設定
+            order.setOrderStatus(0);  // 注文ステータスを適切に設定
+            ordersService.saveOrder(order);
+
+            // order_items テーブルに注文アイテムを保存
+            for (Carts cart : cartItems) {
+                Products product = productsService.findProductById(cart.getProductId());
+
+                OrderItems orderItem = new OrderItems();
+                orderItem.setOrder(order);
+                orderItem.setProduct(product);
+                orderItem.setQuantity(cart.getQuantity());
+                orderItem.setKindId(cart.getKindId());
+
+                orderItemsService.saveOrderItem(orderItem);  // order_items テーブルに保存
+
                 // 在庫を減らす
                 productsService.reduceStock(cart.getProductId(), cart.getQuantity());
-
-                Orders order = new Orders();
-                order.setUserId(user.getId());
-
-                // Productオブジェクトを取得してセット
-                Products product = productsService.findProductById(cart.getProductId());
-                order.setProduct(product);
-
-                order.setQuantity(cart.getQuantity());
-                order.setOrderStatus(0); // 注文ステータスを適切に設定
-                order.setKindId(cart.getKindId());
-                ordersService.saveOrder(order);
 
                 // カートアイテムを削除
                 cartsService.deleteCartById(cart.getId());

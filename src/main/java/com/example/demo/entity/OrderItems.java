@@ -1,9 +1,4 @@
 package com.example.demo.entity;
-import java.sql.Timestamp;
-
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -15,31 +10,21 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import lombok.Data;
-@Entity(name = "orders")
+@Entity(name = "order_items")
 @Data //Lombokアノテーションでgetter、setterなどを自動生成
-@Table(name = "orders") //データベース内のテーブル名を指定
-public class Orders {
+@Table(name = "order_items") //データベース内のテーブル名を指定
+public class OrderItems {
     @Id //主キーを表すフィールド
     //主キーの値が自動生成され、データベースの自動増分（Identity）として扱われる
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     //データベーステーブルの列と対応して列名を指定
-    @Column(name = "user_id")
-	public Long userId;
     @Column(name = "quantity")
 	public int quantity;
-    @Column(name = "order_status")
-    private int orderStatus;
-    @CreationTimestamp //コードの作成日時と更新日時を自動的に設定
-    @Column(name = "created_at")
-    private Timestamp createdAt;
-    @UpdateTimestamp //コードの作成日時と更新日時を自動的に設定
-    @Column(name = "updated_at")
-    private Timestamp updatedAt;
     @Column(name = "kind_id")
 	public Long kindId;
-    @Column(name = "amount")
-    private int amount;
+    @Column(name = "order_status")
+    private int orderStatus;
 
     // Many-to-Oneの関連を定義してProductsテーブルと結びつける
     @ManyToOne(fetch = FetchType.LAZY)
@@ -54,6 +39,10 @@ public class Orders {
         return user;
     }
     
+    @ManyToOne
+    @JoinColumn(name = "order_id", referencedColumnName = "id")
+    private Orders order;
+    
  // 表示用のフィールド（データベースに保存しないため @Transient を使用）
     @Transient
     private String kindName;
@@ -66,5 +55,13 @@ public class Orders {
     // setKindName メソッド
     public void setKindName(String kindName) {
         this.kindName = kindName;
+    }
+    
+    public void setOrder(Orders order) {
+        this.order = order;
+    }
+    
+    public void setProduct(Products product) {
+        this.product = product;
     }
 }
