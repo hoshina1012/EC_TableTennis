@@ -32,14 +32,6 @@ public class OrderItems {
     private Products product;
     
     @ManyToOne
-    @JoinColumn(name = "user_id", insertable = false, updatable = false)
-    private Users user;
-
-    public Users getUser() {
-        return user;
-    }
-    
-    @ManyToOne
     @JoinColumn(name = "order_id", referencedColumnName = "id")
     private Orders order;
     

@@ -193,12 +193,11 @@ public class OrdersController {
         Users user = usersService.findByMailAddress(mailAddress);
 
         if (user != null) {
-            List<Orders> orders = ordersService.findByUserId(user.getId());
-            
-            orders.forEach(order -> {
-                Long kindId = order.getKindId();
+        	List<OrderItems> userOrderItems = orderItemsService.findByUserId(user.getId());
+            userOrderItems.forEach(item -> {
+                Long kindId = item.getKindId();
                 String kindName = "N/A";
-                Categories category = order.getProduct().getCategory();
+                Categories category = item.getProduct().getCategory();
 
                 if ("ラケット".equals(category.getName())) {
                     kindName = ordersService.getRacketTypeName(kindId);
@@ -207,10 +206,10 @@ public class OrdersController {
                 } else if ("シューズ".equals(category.getName())) {
                     kindName = ordersService.getShoeSizeName(kindId);
                 }
-                order.setKindName(kindName);  // 表示用のkindNameを設定
+                item.setKindName(kindName); // 表示用のkindNameを設定
             });
-            
-            model.addAttribute("orders", orders);
+
+            model.addAttribute("orders", userOrderItems);
             model.addAttribute("username", user.getUserName());
         }
 

@@ -123,17 +123,17 @@
 		        </tr>
 		    </thead>
 		    <tbody>
-				<tr th:each="order, iterStat : ${orders}" th:if="${iterStat.count <= 3}">
-                    <td	class="right_text" th:text="${order.product.id}"></td>					
-					<td>
-					    <a th:href="@{/products/product_detail/{productId}(productId = ${order.product.id})}" th:text="${order.product.name}"></a>
-					</td>					
-					<td th:text="${order.kindName}"></td>
-                    <td	class="price_format" th:text="'￥' + ${order.product.price}"></td>
-                    <td	class="quantity" th:text="${order.quantity}"></td>
-                    <td th:text="${#dates.format(order.createdAt, 'yyyy/MM/dd')}"></td>					
-					<td th:text="${order.orderStatus == 0 ? '未発送' : '発送済'}"></td>
-                </tr>
+				<tr th:each="item : ${orders}">
+		            <td class="right_text" th:text="${item.product.id}"></td>
+		            <td>
+		                <a th:href="@{/products/product_detail/{productId}(productId = ${item.product.id})}" th:text="${item.product.name}"></a>
+		            </td>
+		            <td th:text="${item.kindName}"></td>
+		            <td class="price_format" th:text="'￥' + ${item.product.price}"></td>
+		            <td class="quantity" th:text="${item.quantity}"></td>
+		            <td th:text="${#dates.format(item.order.createdAt, 'yyyy/MM/dd')}"></td>
+		            <td th:text="${item.order.orderStatus == 0 ? '未発送' : '発送済'}"></td>
+		        </tr>
 		    </tbody>
 		</table><br>		
 		<div class="center_text" th:if="${user.userStatus == 0}">

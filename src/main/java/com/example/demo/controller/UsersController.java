@@ -20,9 +20,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.entity.Categories;
+import com.example.demo.entity.OrderItems;
 import com.example.demo.entity.Orders;
 import com.example.demo.entity.Products;
 import com.example.demo.entity.Users;
+import com.example.demo.service.OrderItemsService;
 import com.example.demo.service.OrdersService;
 import com.example.demo.service.ProductsService;
 import com.example.demo.service.UsersService;
@@ -36,6 +38,10 @@ public class UsersController {
 
     @Autowired
     private OrdersService ordersService;
+
+
+    @Autowired
+    private OrderItemsService orderItemsService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -180,8 +186,23 @@ public class UsersController {
         model.addAttribute("currentPage", page);
 
         // ユーザーの注文履歴を取得
-        List<Orders> userOrders = ordersService.findByUserId(userId);
-        model.addAttribute("orders", userOrders);
+        List<OrderItems> userOrderItems = orderItemsService.findByUserId(userId);
+        userOrderItems.forEach(item -> {
+            Long kindId = item.getKindId();
+            String kindName = "N/A";
+            Categories category = item.getProduct().getCategory();
+
+            if ("ラケット".equals(category.getName())) {
+                kindName = ordersService.getRacketTypeName(kindId);
+            } else if ("ラバー".equals(category.getName())) {
+                kindName = ordersService.getRubberColorName(kindId);
+            } else if ("シューズ".equals(category.getName())) {
+                kindName = ordersService.getShoeSizeName(kindId);
+            }
+            item.setKindName(kindName); // 表示用のkindNameを設定
+        });
+
+        model.addAttribute("orders", userOrderItems);
 
         // ログイン中のユーザーが販売した商品の注文データを取得
         List<Orders> managedOrders = ordersService.fetchOrders().stream()
@@ -189,8 +210,8 @@ public class UsersController {
                 .collect(Collectors.toList());
         model.addAttribute("managedOrders", managedOrders);
         
-        List<Orders> userOrders2 = ordersService.findByUserId(userId);
-        userOrders2.forEach(order -> {
+        List<OrderItems> userOrderItems2 = orderItemsService.findByUserId(userId);
+        userOrderItems2.forEach(order -> {
             Long kindId = order.getKindId();
             String kindName = "N/A";
             Categories category = order.getProduct().getCategory();
@@ -203,7 +224,7 @@ public class UsersController {
             }
             order.setKindName(kindName);  // 表示用のkindNameを追加
         });
-        model.addAttribute("orders", userOrders);
+        model.addAttribute("orders", userOrderItems);
         
         List<Orders> managedOrders2 = ordersService.fetchOrders().stream()
                 .filter(order -> order.getProduct().getUser().getId().equals(userId))
