@@ -11,4 +11,7 @@ import com.example.demo.entity.OrderItems;
 public interface OrderItemsRepository extends JpaRepository<OrderItems, Long> {
 	@Query("SELECT oi FROM order_items oi JOIN oi.order o WHERE o.userId = :userId")
     List<OrderItems> findByUserId(@Param("userId") Long userId);
+	
+	@Query("SELECT oi FROM order_items oi ORDER BY oi.id DESC")
+	List<OrderItems> findAllOrderByIdDesc();
 }

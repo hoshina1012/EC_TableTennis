@@ -62,22 +62,22 @@
 		        </tr>
 		    </thead>
 		    <tbody>
-		        <tr th:each="order : ${managedOrders}">
-		            <td>
-		                <a th:href="@{/products/product_detail/{productId}(productId = ${order.product.id})}" th:text="${order.product.name}"></a>
-		            </td>					
-					<td th:text="${order.kindName}"></td>
-		            <td class="price_format" th:text="'￥' + ${order.product.price}"></td>
-		            <td class="quantity" th:text="${order.quantity}"></td>
-		            <td th:text="${#dates.format(order.createdAt, 'yyyy/MM/dd')}"></td>
-		            <td th:text="${order.orderStatus == 0 ? '未発送' : '発送済'}"></td>					
-					<td>
-					    <form th:action="@{/orderManagement/updateStatus}" method="post">
-					        <input type="hidden" name="orderId" th:value="${order.id}" />
-					        <button type="submit" th:if="${order.orderStatus == 0}">発送済にする</button>
-					    </form>
-					</td>
-		        </tr>
+				<tr th:each="orderItem : ${managedOrders}">
+                    <td>
+                        <a th:href="@{/products/product_detail/{productId}(productId = ${orderItem.product.id})}" th:text="${orderItem.product.name}"></a>
+                    </td>                    
+                    <td th:text="${orderItem.kindName}"></td>
+                    <td class="price_format" th:text="'￥' + ${orderItem.product.price}"></td>
+                    <td class="quantity" th:text="${orderItem.quantity}"></td>
+                    <td th:text="${#dates.format(orderItem.order.createdAt, 'yyyy/MM/dd')}"></td>
+                    <td th:text="${orderItem.orderStatus == 0 ? '未発送' : '発送済み'}"></td>                    
+                    <td>
+						<form th:action="@{/orderManagement/updateStatus}" method="post">
+						    <input type="hidden" name="orderItemId" th:value="${orderItem.id}" />
+						    <button type="submit" th:if="${orderItem.orderStatus == 0}">発送済にする</button>
+						</form>
+                    </td>
+                </tr>
 		    </tbody>
 		</table>
 	</div>

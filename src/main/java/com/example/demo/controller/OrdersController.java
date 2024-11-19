@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -25,6 +26,8 @@ import com.example.demo.service.PaymentsService;
 import com.example.demo.service.ProductDetailService;
 import com.example.demo.service.ProductsService;
 import com.example.demo.service.UsersService;
+
+import jakarta.transaction.Transactional;
 
 @Controller
 public class OrdersController {
@@ -223,40 +226,47 @@ public class OrdersController {
 	    Users user = usersService.findByMailAddress(mailAddress);
 
 	    if (user != null) {
-	        // ユーザーが販売者の注文を取得
-	        List<Orders> managedOrders = ordersService.findOrdersBySellerId(user.getId());
-	        
-	        managedOrders.forEach(order -> {
-                Long kindId = order.getKindId();
-                String kindName = "N/A";
-                Categories category = order.getProduct().getCategory();
+	        // 自分の商品の注文履歴を取得（order_itemsテーブルのproduct_idとproductsテーブルのuser_idを参照）
+	    	List<OrderItems> managedOrderItems = orderItemsService.fetchAllOrderItemsByIdDesc().stream()
+                .filter(orderItem -> orderItem.getProduct().getUser().getId().equals(user.getId())) // 自分の商品に対する注文のみ
+	            .collect(Collectors.toList());
 
-                if ("ラケット".equals(category.getName())) {
-                    kindName = ordersService.getRacketTypeName(kindId);
-                } else if ("ラバー".equals(category.getName())) {
-                    kindName = ordersService.getRubberColorName(kindId);
-                } else if ("シューズ".equals(category.getName())) {
-                    kindName = ordersService.getShoeSizeName(kindId);
-                }
-                order.setKindName(kindName);  // 表示用のkindNameを設定
-            });
-	        
-	        model.addAttribute("managedOrders", managedOrders);
+	        managedOrderItems.forEach(orderItem -> {
+	            Long kindId = orderItem.getKindId();
+	            String kindName = "N/A";
+	            Categories category = orderItem.getProduct().getCategory();
+
+	            // 各カテゴリーに応じて種類を設定
+	            if ("ラケット".equals(category.getName())) {
+	                kindName = ordersService.getRacketTypeName(kindId);
+	            } else if ("ラバー".equals(category.getName())) {
+	                kindName = ordersService.getRubberColorName(kindId);
+	            } else if ("シューズ".equals(category.getName())) {
+	                kindName = ordersService.getShoeSizeName(kindId);
+	            }
+	            orderItem.setKindName(kindName);  // 表示用のkindNameを設定
+	        });
+
+	        model.addAttribute("managedOrders", managedOrderItems);
 	        model.addAttribute("username", user.getUserName());
 	    }
 
 	    return "orderManagement"; // orderManagement.html に対応
 	}
-	
+
+	@Transactional
 	@PostMapping("/orderManagement/updateStatus")
-	public String updateOrderStatus(@RequestParam("orderId") Long orderId) {
-	    Orders order = ordersService.findOrderById(orderId);
-	    if (order != null && order.getOrderStatus() == 0) {
-	        order.setOrderStatus(1); // ステータスを「発送済」に更新
-	        ordersService.saveOrder(order);
+	public String updateOrderStatus(@RequestParam("orderItemId") Long orderItemId) {
+	    // orderItemIdを基に注文アイテムを取得
+	    OrderItems orderItem = orderItemsService.findById(orderItemId);
+
+	    // order_statusが0の場合に1に更新
+	    if (orderItem.getOrderStatus() == 0) {
+	        orderItem.setOrderStatus(1);
+	        orderItemsService.saveOrderItem(orderItem);
 	    }
+
+	    // 受注管理画面にリダイレクト
 	    return "redirect:/orderManagement";
 	}
-
-
 }
