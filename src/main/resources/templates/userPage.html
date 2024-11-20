@@ -145,8 +145,7 @@
 		<table class="center_text" th:if="${user.userStatus == 1}">
 		    <thead>
 		        <tr>
-		            <th width="10%">商品ID</th>
-		            <th width="25%">商品名</th>
+					<th width="35%">商品名</th>					
 					<th width="10%">種類</th>
 		            <th width="15%">単価</th>
 		            <th width="10%">数量</th>
@@ -155,17 +154,16 @@
 		        </tr>
 		    </thead>
 		    <tbody>
-				<tr th:each="orderItem, iterStat : ${managedOrderItems}" th:if="${iterStat.count <= 3}">
-				            <td class="right_text" th:text="${orderItem.product.id}"></td>
-				            <td>
-				                <a th:href="@{/products/product_detail/{productId}(productId = ${orderItem.product.id})}" th:text="${orderItem.product.name}"></a>
-				            </td>
-				            <td th:text="${orderItem.kindName}"></td>
-				            <td class="price_format" th:text="'￥' + ${orderItem.product.price}"></td>
-				            <td class="quantity" th:text="${orderItem.quantity}"></td>
-				            <td th:text="${#dates.format(orderItem.order.createdAt, 'yyyy/MM/dd')}"></td>
-				            <td th:text="${orderItem.status == 0 ? '未発送' : '発送済'}"></td>
-				        </tr>
+				<tr th:each="orderItem : ${managedOrders}">
+                    <td>
+                        <a th:href="@{/products/product_detail/{productId}(productId = ${orderItem.product.id})}" th:text="${orderItem.product.name}"></a>
+                    </td>                    
+                    <td th:text="${orderItem.kindName}"></td>
+                    <td class="price_format" th:text="'￥' + ${orderItem.product.price}"></td>
+                    <td class="quantity" th:text="${orderItem.quantity}"></td>
+                    <td th:text="${#dates.format(orderItem.order.createdAt, 'yyyy/MM/dd')}"></td>
+                    <td th:text="${orderItem.orderStatus == 0 ? '未発送' : '発送済み'}"></td> 
+                </tr>
 		    </tbody>
 		</table><br>		
 		<div class="center_text" th:if="${user.userStatus == 1}">

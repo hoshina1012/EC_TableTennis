@@ -204,28 +204,27 @@ public class UsersController {
         model.addAttribute("orders", userOrderItems);
 
         // ログイン中のユーザーが販売した商品の注文データを取得
-        List<OrderItems> managedOrderItems = orderItemsService.fetchAllOrderItems().stream()
-                .filter(orderItem -> orderItem.getProduct().getUser().getId().equals(userId))  // 自分の商品に対する注文のみ
-                .collect(Collectors.toList());
+        List<OrderItems> managedOrderItems = orderItemsService.fetchAllOrderItemsByIdDesc().stream()
+                .filter(orderItem -> orderItem.getProduct().getUser().getId().equals(user.getId())) // 自分の商品に対する注文のみ
+	            .collect(Collectors.toList());
 
-        managedOrderItems.forEach(orderItem -> {
-            Long kindId = orderItem.getKindId();
-            String kindName = "N/A";
-            Categories category = orderItem.getProduct().getCategory();
+	        managedOrderItems.forEach(orderItem -> {
+	            Long kindId = orderItem.getKindId();
+	            String kindName = "N/A";
+	            Categories category = orderItem.getProduct().getCategory();
 
-            // 各カテゴリーに応じて種類を設定
-            if ("ラケット".equals(category.getName())) {
-                kindName = ordersService.getRacketTypeName(kindId);
-            } else if ("ラバー".equals(category.getName())) {
-                kindName = ordersService.getRubberColorName(kindId);
-            } else if ("シューズ".equals(category.getName())) {
-                kindName = ordersService.getShoeSizeName(kindId);
-            }
-            orderItem.setKindName(kindName);  // 表示用のkindNameを設定
-        });
+	            // 各カテゴリーに応じて種類を設定
+	            if ("ラケット".equals(category.getName())) {
+	                kindName = ordersService.getRacketTypeName(kindId);
+	            } else if ("ラバー".equals(category.getName())) {
+	                kindName = ordersService.getRubberColorName(kindId);
+	            } else if ("シューズ".equals(category.getName())) {
+	                kindName = ordersService.getShoeSizeName(kindId);
+	            }
+	            orderItem.setKindName(kindName);  // 表示用のkindNameを設定
+	        });
 
-        // 注文履歴に必要なデータをモデルに追加
-        model.addAttribute("managedOrders", managedOrderItems);
+	        model.addAttribute("managedOrders", managedOrderItems);
         
         List<OrderItems> userOrderItems2 = orderItemsService.findByUserId(userId);
         userOrderItems2.forEach(order -> {
@@ -243,26 +242,27 @@ public class UsersController {
         });
         model.addAttribute("orders", userOrderItems);
         
-        List<OrderItems> managedOrderItems2 = orderItemsService.fetchAllOrderItems().stream()
-                .filter(orderItem -> orderItem.getProduct().getUser().getId().equals(userId))
-                .collect(Collectors.toList());
-        managedOrderItems2.forEach(orderItem -> {
-            Long kindId = orderItem.getKindId();
-            String kindName = "N/A";
-            Categories category = orderItem.getProduct().getCategory();
+        List<OrderItems> managedOrderItems2 = orderItemsService.fetchAllOrderItemsByIdDesc().stream()
+                .filter(orderItem -> orderItem.getProduct().getUser().getId().equals(user.getId())) // 自分の商品に対する注文のみ
+	            .collect(Collectors.toList());
 
-            if ("ラケット".equals(category.getName())) {
-                kindName = ordersService.getRacketTypeName(kindId);
-            } else if ("ラバー".equals(category.getName())) {
-                kindName = ordersService.getRubberColorName(kindId);
-            } else if ("シューズ".equals(category.getName())) {
-                kindName = ordersService.getShoeSizeName(kindId);
-            }
-            orderItem.setKindName(kindName);  // 表示用のkindNameを設定
-        });
+	        managedOrderItems2.forEach(orderItem -> {
+	            Long kindId = orderItem.getKindId();
+	            String kindName = "N/A";
+	            Categories category = orderItem.getProduct().getCategory();
 
-        model.addAttribute("managedOrders", managedOrderItems);
+	            // 各カテゴリーに応じて種類を設定
+	            if ("ラケット".equals(category.getName())) {
+	                kindName = ordersService.getRacketTypeName(kindId);
+	            } else if ("ラバー".equals(category.getName())) {
+	                kindName = ordersService.getRubberColorName(kindId);
+	            } else if ("シューズ".equals(category.getName())) {
+	                kindName = ordersService.getShoeSizeName(kindId);
+	            }
+	            orderItem.setKindName(kindName);  // 表示用のkindNameを設定
+	        });
 
+	        model.addAttribute("managedOrders", managedOrderItems);
         return "userPage";
     }
 
