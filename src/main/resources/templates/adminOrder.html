@@ -53,24 +53,22 @@
         </div>
         <h1 class="center_text">注文一覧</h1>
         <table>
-            <tr>
-                <th>ID</th>				
+			<tr>
+		        <th>ID</th>				
 				<th>金額</th>
-                <th>注文日</th>				
+		        <th>注文日</th>				
 				<th>注文ユーザー</th>				
-				<th>受注ユーザー</th>				
 				<th></th>
-            </tr>
+		    </tr>
 			<tr th:each="order : ${ordersPage.content}">
-                <td class="right_text" th:text="${order.id}"></td>				
-				<td	class="price_format" th:text="${amountMap[order.id]}"></td>
+		        <td class="right_text" th:text="${order.id}"></td>				
+				<td	class="price_format" th:text="'￥' + ${order.amount}"></td>
 				<td th:text="${#dates.format(order.createdAt, 'yyyy/MM/dd')}"></td>				
 				<td th:text="${userNameMap[order.id]}"></td>				
-				<td th:text="${sellerNameMap[order.id]}"></td>				
 				<td>
-				    <a th:href="@{/admin/order_detail/{id}(id=${order.id})}">詳細</a> <!-- 詳細ページへのリンクを追加 -->
+				    <a th:href="@{/admin/order_detail/{id}(id=${order.id})}">詳細</a> <!-- 詳細ページへのリンク -->
 				</td>
-            </tr>
+		    </tr>
         </table><br>
 		<div class="pagination">
             <a th:href="@{/admin/order(page=${currentPage - 1})}" th:if="${currentPage > 0}">前へ</a>

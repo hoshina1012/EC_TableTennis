@@ -219,26 +219,12 @@ public class AdminController {
             model.addAttribute("currentPage", page);
             model.addAttribute("totalPages", ordersPage.getTotalPages());
             
-            Map<Long, Long> amountMap = ordersPage.getContent().stream()
-                    .collect(Collectors.toMap(
-                        Orders::getId,
-                        order -> ordersService.calculateAmount(order)
-                    ));
-                model.addAttribute("amountMap", amountMap);
-                
             Map<Long, String> userNameMap = ordersPage.getContent().stream()
                     .collect(Collectors.toMap(
                         Orders::getId,
                         order -> order.getUser().getUserName()
                     ));
-                model.addAttribute("userNameMap", userNameMap);
-                
-            Map<Long, String> sellerNameMap = ordersPage.getContent().stream()
-                    .collect(Collectors.toMap(
-                        Orders::getId,
-                        order -> order.getProduct().getUser().getUserName()
-                    ));
-                model.addAttribute("sellerNameMap", sellerNameMap);
+            model.addAttribute("userNameMap", userNameMap);
 
             return "adminOrder"; // Thymeleaf テンプレートの名前
         }
