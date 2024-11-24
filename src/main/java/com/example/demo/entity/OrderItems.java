@@ -35,6 +35,10 @@ public class OrderItems {
     @JoinColumn(name = "order_id", referencedColumnName = "id")
     private Orders order;
     
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private Users user;
+    
  // 表示用のフィールド（データベースに保存しないため @Transient を使用）
     @Transient
     private String kindName;

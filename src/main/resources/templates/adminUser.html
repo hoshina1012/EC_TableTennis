@@ -80,8 +80,7 @@
 		        <th>名前</th>
 		        <th>メールアドレス</th>
 		        <th>登録商品数</th>				
-				<th>注文数</th>				
-				<th>受注数</th>				
+				<th>注文数</th>			
 				<th>問い合わせ数</th>				
 				<th>管理者権限</th>
 				<th></th>
@@ -91,8 +90,7 @@
 		        <td th:text="${user.userName}"></td>
 		        <td th:text="${user.mailAddress}"></td>
 		        <td	class="right_text" th:text="${productCounts[iterStat.index]}"></td>				
-				<td	class="right_text" th:text="${orderCounts[user.id]}"></td>				
-				<td	class="right_text" th:text="${receivedOrderCounts[user.id]}"></td>				
+				<td	class="right_text" th:text="${orderCounts[user.id]}"></td>
 				<td	class="right_text" th:text="${helpCounts[user.id]}"></td>				
 				<td class="center_text">
 				    <span th:if="${user.id == 1}" th:text="'有'"></span>

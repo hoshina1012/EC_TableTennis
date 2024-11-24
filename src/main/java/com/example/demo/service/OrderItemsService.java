@@ -77,5 +77,9 @@ public class OrderItemsService {
                 }
         ));
     }
+	
+	public long countOrdersByProductOwnerId(Long userId) {
+	    return orderItemsRepository.countByProduct_User_Id(userId);
+	}
 
 }

@@ -6,7 +6,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -26,25 +25,14 @@ public class Orders {
     //データベーステーブルの列と対応して列名を指定
     @Column(name = "user_id")
 	public Long userId;
-    @Column(name = "quantity")
-	public int quantity;
-    @Column(name = "order_status")
-    private int orderStatus;
     @CreationTimestamp //コードの作成日時と更新日時を自動的に設定
     @Column(name = "created_at")
     private Timestamp createdAt;
     @UpdateTimestamp //コードの作成日時と更新日時を自動的に設定
     @Column(name = "updated_at")
     private Timestamp updatedAt;
-    @Column(name = "kind_id")
-	public Long kindId;
     @Column(name = "amount")
     private int amount;
-
-    // Many-to-Oneの関連を定義してProductsテーブルと結びつける
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", referencedColumnName = "id")
-    private Products product;
     
     @ManyToOne
     @JoinColumn(name = "user_id", insertable = false, updatable = false)

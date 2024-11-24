@@ -14,9 +14,7 @@ import com.example.demo.entity.Orders;
 @Repository
 public interface OrdersRepository extends JpaRepository<Orders, Long> {
     List<Orders> findByUserIdOrderByCreatedAtDesc(Long userId);
-    List<Orders> findByProduct_User_IdOrderByIdDesc(Long userId);
     long countByUserId(Long userId);
-    long countByProduct_User_Id(Long userId);
     Page<Orders> findAllByOrderByIdAsc(Pageable pageable);
 
     @Query(value = "SELECT SUM(quantity) FROM orders WHERE product_id = :productId", nativeQuery = true)

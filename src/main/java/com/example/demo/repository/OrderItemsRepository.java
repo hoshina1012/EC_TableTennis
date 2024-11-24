@@ -16,4 +16,6 @@ public interface OrderItemsRepository extends JpaRepository<OrderItems, Long> {
 	List<OrderItems> findAllOrderByIdDesc();
 
     List<OrderItems> findByOrderId(Long orderId);
+    
+    long countByProduct_User_Id(Long userId);
 }

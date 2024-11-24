@@ -53,10 +53,6 @@ public class OrdersService {
         return ordersRepository.findAllByOrderByIdAsc(pageable);
     }
 	
-	public List<Orders> findOrdersBySellerId(Long sellerId) {
-	    return ordersRepository.findByProduct_User_IdOrderByIdDesc(sellerId);
-	}
-	
 	public Orders findOrderById(Long orderId) {
 	    return ordersRepository.findById(orderId).orElse(null);
 	}
@@ -65,17 +61,9 @@ public class OrdersService {
         return ordersRepository.countByUserId(userId);
     }
 	
-	public long countOrdersByProductOwnerId(Long ownerId) {
-        return ordersRepository.countByProduct_User_Id(ownerId);
-    }
-	
 	public long sumQuantityByProductId(Long productId) {
         Long sum = ordersRepository.sumQuantityByProductId(productId);
         return sum != null ? sum : 0;
-    }
-	
-	public long calculateAmount(Orders order) {
-        return order.getProduct().getPrice() * order.getQuantity();
     }
 	
 	// 型を取得するメソッド
@@ -91,20 +79,5 @@ public class OrdersService {
     // サイズを取得するメソッド
     public String getShoeSizeName(Long sizeId) {
         return sizesRepository.findById(sizeId).map(Sizes::getName).orElse("N/A");
-    }
-    
-    public String getTypeNameByCategory(Orders order) {
-        Long kindId = order.getKindId();  // `kindId`を取得
-        String categoryName = order.getProduct().getCategoryName();
-
-        if ("ラケット".equals(categoryName)) {
-            return getRacketTypeName(kindId); // ラケットの型名を取得
-        } else if ("ラバー".equals(categoryName)) {
-            return getRubberColorName(kindId); // ラバーの色名を取得
-        } else if ("シューズ".equals(categoryName)) {
-            return getShoeSizeName(kindId); // シューズのサイズ名を取得
-        } else {
-            return "N/A";
-        }
     }
 }

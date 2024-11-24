@@ -101,13 +101,6 @@ public class AdminController {
                     ));
             model.addAttribute("orderCounts", orderCounts);
             
-            Map<Long, Long> receivedOrderCounts = usersList.stream()
-                    .collect(Collectors.toMap(
-                            Users::getId,
-                            u -> ordersService.countOrdersByProductOwnerId(u.getId())
-                    ));
-            model.addAttribute("receivedOrderCounts", receivedOrderCounts);
-            
             Map<Long, Long> helpCounts = usersList.stream()
                     .collect(Collectors.toMap(
                     		Users::getId,
@@ -145,17 +138,10 @@ public class AdminController {
                     .collect(Collectors.toList());
             model.addAttribute("productCounts", productCounts);
             
-            Map<Long, Long> orderCounts = usersList.stream()
-                    .collect(Collectors.toMap(
-                            Users::getId,
-                            u -> ordersService.countOrdersByUserId(u.getId())
-                    ));
-            model.addAttribute("orderCounts", orderCounts);
-            
             Map<Long, Long> receivedOrderCounts = usersList.stream()
                     .collect(Collectors.toMap(
                             Users::getId,
-                            u -> ordersService.countOrdersByProductOwnerId(u.getId())
+                            u -> orderItemsService.countOrdersByProductOwnerId(u.getId())
                     ));
             model.addAttribute("receivedOrderCounts", receivedOrderCounts);
             

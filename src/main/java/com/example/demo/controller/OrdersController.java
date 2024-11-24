@@ -137,7 +137,6 @@ public class OrdersController {
             Orders order = new Orders();
             order.setUserId(user.getId());
             order.setAmount(totalAmount);  // 合計金額を設定
-            order.setOrderStatus(0);  // 注文ステータスを適切に設定
             ordersService.saveOrder(order);
 
             // order_items テーブルに注文アイテムを保存
