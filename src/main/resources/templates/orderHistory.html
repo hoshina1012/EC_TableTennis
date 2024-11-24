@@ -71,7 +71,7 @@
 		            <td class="price_format" th:text="'￥' + ${item.product.price}"></td>
 		            <td class="quantity" th:text="${item.quantity}"></td>
 		            <td th:text="${#dates.format(item.order.createdAt, 'yyyy/MM/dd')}"></td>
-		            <td th:text="${item.order.orderStatus == 0 ? '未発送' : '発送済'}"></td>
+		            <td th:text="${item.orderStatus == 0 ? '未発送' : '発送済'}"></td>
 		        </tr>
 		    </tbody>
 		</table>
