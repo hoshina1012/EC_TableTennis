@@ -52,46 +52,54 @@
 		    
 	    <table>
 	        <tr>
-	            <th>注文ID</th>
-	            <td	class="right_text" th:text="${order.id}"></td>
+	            <th>注文ID</th>				
+				<td	class="right_text" th:text="${order.id}"></td>
 	        </tr>
-	        <tr>
-	            <th>商品名</th>
-	            <td th:text="${order.product.name}"></td>
-	        </tr>
-			<tr>
-			    <th>種類</th>
-				<td th:text="${typeName}"></td>
+	        <tr>						
+				<th>注文ユーザー</th>
+	            <td	class="right_text" th:text="${order.user.userName}"></td>
 			</tr>
-	        <tr>
-	            <th>数量</th>
-	            <td	class="right_text" th:text="${order.quantity}"></td>
-	        </tr>
-	        <tr>
-	            <th>価格</th>
-	            <td	class="price_format" th:text="${order.product.price}"></td>
-	        </tr>
-	        <tr>
-	            <th>合計金額</th>
-	            <td	class="price_format" th:text="${order.quantity * order.product.price}"></td>
-	        </tr>
-	        <tr>
-	            <th>受注ユーザー</th>
-	            <td th:text="${order.product.user.userName}"></td>
-	        </tr>
-	        <tr>
-	            <th>注文ユーザー</th>
-	            <td th:text="${order.user.userName}"></td>
-	        </tr>
-	        <tr>
-	            <th>注文日</th>
+			<tr>			
+				<th>注文日</th>
 	            <td th:text="${#dates.format(order.createdAt, 'yyyy-MM-dd')}"></td>
-	        </tr>			
-			<tr>
-			    <th>ステータス</th>
-			    <td th:text="${order.orderStatus == 0 ? '未発送' : '発送済'}"></td>
 			</tr>
-	    </table>
+	    </table><br>
+		
+		<table>
+	        <tr>
+				<th	width="30%">商品名</th>				
+				<th	width="15%">種類</th>				
+				<th	width="10%">数量</th>				
+				<th	width="10%">単価</th>				
+				<th	width="20%">受注ユーザー</th>				
+				<th	width="15%">ステータス</th>
+	        </tr>
+			<tr th:each="orderItem : ${orderItems}">
+		        <td class="center_text" th:text="${orderItem.product.name}"></td>
+				<td class="center_text" th:text="${typeNames[orderItem.id]}"></td>
+		        <td class="right_text" th:text="${orderItem.quantity}"></td>
+		        <td class="price_format" th:text="${orderItem.product.price}"></td>				
+				<td class="center_text" th:text="${orderItem.product.user.userName}"></td>
+		        <td class="center_text" th:text="${orderItem.orderStatus == 0 ? '未発送' : '発送済'}"></td>
+		    </tr>
+	    </table><br>
+		
+		<h2>支払情報</h2>
+				    
+		<table>
+		    <tr>
+		        <th>カード番号</th>
+		        <td class="right_text" th:text="${maskedCardNumber}">**** **** **** 1234</td>
+		    </tr>
+		    <tr>
+		        <th>名前</th>
+		        <td class="right_text" th:text="${cardHolder}">山田 太郎</td>
+		    </tr>
+		    <tr>
+		        <th>支払日</th>
+		        <td class="right_text" th:text="${paymentDate}">2024-11-24</td>
+		    </tr>
+		</table><br>
 	
 	    <a th:href="@{/admin/order}">注文一覧に戻る</a>
     </div>

@@ -56,4 +56,42 @@ public class OrderItems {
     public void setProduct(Products product) {
         this.product = product;
     }
+    
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "kind_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private RacketTypes racketType;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "kind_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private RubberColors rubberColor;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "kind_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private ShoesSizes shoeSize;
+
+    // ゲッターとセッター
+    public RacketTypes getRacketType() {
+        return racketType;
+    }
+
+    public void setRacketType(RacketTypes racketType) {
+        this.racketType = racketType;
+    }
+
+    public RubberColors getRubberColor() {
+        return rubberColor;
+    }
+
+    public void setRubberColor(RubberColors rubberColor) {
+        this.rubberColor = rubberColor;
+    }
+
+    public ShoesSizes getShoeSize() {
+        return shoeSize;
+    }
+
+    public void setShoeSize(ShoesSizes shoeSize) {
+        this.shoeSize = shoeSize;
+    }
 }

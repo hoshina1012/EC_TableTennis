@@ -14,4 +14,6 @@ public interface OrderItemsRepository extends JpaRepository<OrderItems, Long> {
 	
 	@Query("SELECT oi FROM order_items oi ORDER BY oi.id DESC")
 	List<OrderItems> findAllOrderByIdDesc();
+
+    List<OrderItems> findByOrderId(Long orderId);
 }

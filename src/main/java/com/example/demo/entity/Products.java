@@ -56,4 +56,8 @@ public class Products {
     public String getCategoryName() {
         return category != null ? category.getName() : null;
     }
+    
+    public Long getCategoryId() {
+        return category != null ? category.getId() : null;
+    }
 }

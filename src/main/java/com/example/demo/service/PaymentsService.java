@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,5 +16,9 @@ public class PaymentsService {
 
     public void savePayment(Payments payment) {
         paymentsRepository.save(payment);
+    }
+
+    public Optional<Payments> findById(Long Id) {
+        return paymentsRepository.findById(Id);
     }
 }

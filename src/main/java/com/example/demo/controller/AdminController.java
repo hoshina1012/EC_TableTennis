@@ -1,7 +1,9 @@
 package com.example.demo.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +20,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.entity.Helps;
+import com.example.demo.entity.OrderItems;
 import com.example.demo.entity.Orders;
+import com.example.demo.entity.Payments;
 import com.example.demo.entity.Products;
 import com.example.demo.entity.Users;
 import com.example.demo.service.HelpsService;
+import com.example.demo.service.OrderItemsService;
 import com.example.demo.service.OrdersService;
+import com.example.demo.service.PaymentsService;
 import com.example.demo.service.ProductsService;
 import com.example.demo.service.UsersService;
 
@@ -39,7 +45,13 @@ public class AdminController {
     private OrdersService ordersService;
 
     @Autowired
+    private OrderItemsService orderItemsService;
+
+    @Autowired
     private ProductsService productsService;
+    
+    @Autowired
+    private PaymentsService paymentsService;
 
 
     @GetMapping("/admin")
@@ -278,15 +290,41 @@ public class AdminController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String mailAddress = auth.getName();
         Users currentUser = usersService.findByMailAddress(mailAddress);
-        model.addAttribute("username", currentUser.getUserName());
 
-        // 管理者チェック
         if (currentUser != null && currentUser.getId() == 1) {
+            model.addAttribute("username", currentUser.getUserName());
+
             Orders order = ordersService.findOrderById(orderId);
             if (order != null) {
+                // 注文情報
                 model.addAttribute("order", order);
-                String typeName = ordersService.getTypeNameByCategory(order);
-                model.addAttribute("typeName", typeName);
+
+                // 関連する order_items を取得
+                List<OrderItems> orderItems = orderItemsService.findByOrderId(orderId);
+                model.addAttribute("orderItems", orderItems);
+
+                // 種類名のマップを取得
+                Map<Long, String> typeNames = orderItemsService.getTypeNamesByOrderItems(orderItems);
+                model.addAttribute("typeNames", typeNames);
+                
+                // 支払情報
+                Optional<Payments> paymentOptional = paymentsService.findById(orderId);
+                if (paymentOptional.isPresent()) {
+                    Payments payment = paymentOptional.get();
+
+                    // カード番号の最後の4桁のみ取得
+                    String cardNumberStr = String.valueOf(payment.getCardNumber()); // LongをStringに変換
+                    String maskedCardNumber = "**** **** **** " + cardNumberStr.substring(cardNumberStr.length() - 4);
+                    model.addAttribute("maskedCardNumber", maskedCardNumber);
+
+                    // カード名義人
+                    model.addAttribute("cardHolder", payment.getCardHolder());
+
+                    // 支払日
+                    LocalDate paymentDate = payment.getCreatedAt().toLocalDateTime().toLocalDate(); // Timestamp → LocalDateTime → LocalDate
+                    model.addAttribute("paymentDate", paymentDate);
+                }
+
                 return "orderDetail"; // 注文詳細ページのビュー名
             } else {
                 return "redirect:/admin/order"; // 注文が存在しない場合、注文一覧ページにリダイレクト
@@ -295,4 +333,5 @@ public class AdminController {
 
         return "redirect:/"; // 管理者でない場合、トップページにリダイレクト
     }
+
 }
