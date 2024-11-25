@@ -61,11 +61,6 @@ public class OrdersService {
         return ordersRepository.countByUserId(userId);
     }
 	
-	public long sumQuantityByProductId(Long productId) {
-        Long sum = ordersRepository.sumQuantityByProductId(productId);
-        return sum != null ? sum : 0;
-    }
-	
 	// 型を取得するメソッド
     public String getRacketTypeName(Long typeId) {
         return typesRepository.findById(typeId).map(Types::getName).orElse("N/A");

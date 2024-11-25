@@ -190,7 +190,7 @@ public class AdminController {
         Map<Long, Long> totalSalesMap = productsPage.getContent().stream()
                 .collect(Collectors.toMap(
                     Products::getId,
-                    product -> ordersService.sumQuantityByProductId(product.getId())
+                    product -> orderItemsService.sumQuantityByProductId(product.getId())
                 ));
         
         model.addAttribute("productsPage", productsPage);

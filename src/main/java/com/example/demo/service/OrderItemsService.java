@@ -81,5 +81,9 @@ public class OrderItemsService {
 	public long countOrdersByProductOwnerId(Long userId) {
 	    return orderItemsRepository.countByProduct_User_Id(userId);
 	}
-
+	
+	public long sumQuantityByProductId(Long productId) {
+        Long sum = orderItemsRepository.sumQuantityByProductId(productId);
+        return sum != null ? sum : 0;
+    }
 }
