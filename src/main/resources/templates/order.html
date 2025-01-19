@@ -2,9 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">    
+    <meta charset="UTF-8">    	
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link th:href="@{/css/content.css}" rel="stylesheet">
-    <title>支払情報入力</title>
+    <title>支払情報入力</title>	
+	<script src="https://js.stripe.com/v3/"></script>
     <script>
         // 数字を3桁ごとにカンマで区切る関数
         function formatPrice(price) {
@@ -92,7 +95,6 @@
 		    window.location.href = '/ordered';
 		    return true;
 		}
-
     </script>
 </head>
 <body>
@@ -153,13 +155,13 @@
 		<form th:action="@{/order/submit}" method="post" onsubmit="return validateForm()">
 			<div class="text_zone">
                 <label class ="text_title" for="cardNumber">カード番号:</label>
-                <input class ="text_area" type="text" id="cardNumber" name="cardNumber" maxlength="16" required>
+                <input class ="text_area" type="text" id="cardNumber" name="cardNumber" maxlength="16" value="4242424242424242" required>
             </div>
             <div class="text_zone">
                 <label class ="text_title" for="cardKind">カード種類:</label>
                 <select class ="text_area" id="cardKind" name="cardKind" required>
                     <option value="">選択してください</option>
-                    <option value="1">VISA</option>
+                    <option value="1" selected>VISA</option>
                     <option value="2">MASTER</option>
                     <option value="3">JCB</option>
                 </select>
@@ -204,6 +206,101 @@
                 <button class="center_button" type="submit">購入</button>
             </div>
         </form>
+		<form id="form">
+		    <div>
+		        <label for="card_number">カード番号</label>
+		        <div id="card_number"></div>
+		    </div>
+		
+		    <div>
+		        <label for="card_expiry">有効期限</label>
+		        <div id="card_expiry"></div>
+		    </div>
+		
+		    <div>
+		        <label for="card_security">セキュリティコード</label>
+		        <div id="card_security"></div>
+		    </div>
+		
+		    <div id="card_errors"></div>
+		    <button id="submit">支払い</button>
+		</form>
+		<script>
+	        // Stripe公開可能キーを設定
+	        const stripe = Stripe('pk_test_51QZVtCGDKRdMBOPfRWSrgl9SgvzUImook0yenEZZeP2Ii7eBDXxBZhzODymA4GV8EH5wbkLT9LluscSz4sVUZyCF00zAfIRor2');
+	
+	        // Elementsのインスタンスを作成
+	        const elements = stripe.elements();
+	
+	        // カード番号フィールドを作成
+	        const cardNumber = elements.create('cardNumber', {
+	            style: {
+	                base: {
+	                    fontSize: '16px',
+	                    color: '#32325d',
+	                    '::placeholder': { color: '#aab7c4' },
+	                },
+	                invalid: { color: '#fa755a' },
+	            },
+	        });
+	        cardNumber.mount('#card_number'); // フィールドをマウント
+	
+	        // 有効期限フィールドを作成
+	        const cardExpiry = elements.create('cardExpiry', {
+	            style: {
+	                base: {
+	                    fontSize: '16px',
+	                    color: '#32325d',
+	                    '::placeholder': { color: '#aab7c4' },
+	                },
+	                invalid: { color: '#fa755a' },
+	            },
+	        });
+	        cardExpiry.mount('#card_expiry'); // フィールドをマウント
+	
+	        // セキュリティコードフィールドを作成
+	        const cardCvc = elements.create('cardCvc', {
+	            style: {
+	                base: {
+	                    fontSize: '16px',
+	                    color: '#32325d',
+	                    '::placeholder': { color: '#aab7c4' },
+	                },
+	                invalid: { color: '#fa755a' },
+	            },
+	        });
+	        cardCvc.mount('#card_security'); // フィールドをマウント
+	
+	        // フォーム送信処理
+	        const form = document.getElementById('form');
+	        const errorElement = document.getElementById('card_errors');
+	        form.addEventListener('submit', async (event) => {
+	            event.preventDefault();
+	
+	            // トークンを生成
+	            const { token, error } = await stripe.createToken(cardNumber);
+	
+	            if (error) {
+	                // エラーメッセージを表示
+	                errorElement.textContent = error.message;
+	            } else {
+	                // トークンをサーバーに送信（例: fetch API）
+	                console.log('Token generated:', token);
+	                alert('支払い処理が成功しました！');
+	            }
+	        });
+	    </script>
+		<form action="/pay" method="POST">
+		  <script
+		    src="https://checkout.stripe.com/checkout.js"
+		    class="stripe-button"
+		    data-key="pk_test_51QZVtCGDKRdMBOPfRWSrgl9SgvzUImook0yenEZZeP2Ii7eBDXxBZhzODymA4GV8EH5wbkLT9LluscSz4sVUZyCF00zAfIRor2"
+		    data-name="Tシャツ"
+		    data-description="コットンTシャツ"
+		    data-amount="500"
+		    data-currency="jpy">
+		  </script>
+		</form>
     </div>
 </body>
 </html>

@@ -1,15 +1,20 @@
 package com.example.demo.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.entity.Carts;
@@ -26,6 +31,9 @@ import com.example.demo.service.PaymentsService;
 import com.example.demo.service.ProductDetailService;
 import com.example.demo.service.ProductsService;
 import com.example.demo.service.UsersService;
+import com.stripe.Stripe;
+import com.stripe.exception.StripeException;
+import com.stripe.model.Charge;
 
 import jakarta.transaction.Transactional;
 
@@ -172,6 +180,34 @@ public class OrdersController {
             return false;
         }
         return true;
+    }
+    
+    
+    @RequestMapping(path = "/pay", method = { RequestMethod.POST })
+    public ResponseEntity charge(
+            @RequestParam("stripeToken") String stripeToken,
+            @RequestParam("stripeTokenType") String stripeTokenType,
+            @RequestParam("stripeEmail") String stripeEmail)
+    {
+
+        Stripe.apiKey = "sk_test_51QZVtCGDKRdMBOPfX6GCypZmr0OZu6HLDXnJzrSNCQjGNkfiBvQDm8tKahhBuWBmr6PvFNE15aRr8Kpj7tFbA2S100rF2y7q09";
+
+        Map<String, Object> chargeMap = new HashMap<String, Object>();
+        chargeMap.put("amount", 500);
+        chargeMap.put("description", "コットンTシャツ");
+        chargeMap.put("currency", "jpy");
+        chargeMap.put("source", stripeToken);
+
+        try {
+            Charge charge = Charge.create(chargeMap);
+            System.out.println(charge);
+        } catch (StripeException e) {
+            e.printStackTrace();
+        }
+
+        ResponseEntity response = ResponseEntity.ok().build();
+
+        return response;
     }
 
 	
