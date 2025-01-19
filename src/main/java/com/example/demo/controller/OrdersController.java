@@ -190,7 +190,7 @@ public class OrdersController {
             @RequestParam("stripeEmail") String stripeEmail)
     {
 
-        Stripe.apiKey = "sk_test_51QZVtCGDKRdMBOPfX6GCypZmr0OZu6HLDXnJzrSNCQjGNkfiBvQDm8tKahhBuWBmr6PvFNE15aRr8Kpj7tFbA2S100rF2y7q09";
+        Stripe.apiKey = "sk_test_***";
 
         Map<String, Object> chargeMap = new HashMap<String, Object>();
         chargeMap.put("amount", 500);
